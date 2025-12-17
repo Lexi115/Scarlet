@@ -1,0 +1,53 @@
+services:
+  # Spring Boot application
+  app:
+    container_name: app
+    env_file:
+      - .env
+    build: .
+    ports:
+      - '8080:8080'
+    restart: unless-stopped
+    networks:
+      - network
+    volumes:
+      - .env:/app/.env:ro
+      - ./logs:/app/logs
+    depends_on:
+      - flyway
+
+  # MySQL Database
+  db:
+    container_name: db
+    image: mysql:9.3.0
+    restart: always
+    networks:
+      - network
+    ports:
+      - '3306:3306'
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DATABASE_NAME}
+
+  # FlywayDB (manages database migrations)
+  flyway:
+    container_name: flyway
+    image: flyway/flyway:9.3.0
+    restart: on-failure
+    networks:
+      - network
+    volumes:
+      - ./src/main/resources/db/migration:/flyway/sql
+    command: -url=jdbc:${DATABASE_TYPE}://db?allowPublicKeyRetrieval=true -schemas=${DATABASE_NAME} -user=${DATABASE_USERNAME} -password=${DATABASE_PASSWORD} -connectRetries=60 migrate
+    depends_on:
+      - db
+
+volumes:
+  # Database volume.
+  db_data:
+
+networks:
+  network:
+    driver: bridge
