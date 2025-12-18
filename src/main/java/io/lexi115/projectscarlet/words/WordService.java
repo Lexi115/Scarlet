@@ -1,15 +1,33 @@
 package io.lexi115.projectscarlet.words;
 
+import io.lexi115.projectscarlet.cache.CacheService;
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
+@AllArgsConstructor
 public class WordService {
 
+    private CacheService cacheService;
+
+    private WordRepository wordRepository;
+
+    public void chooseRandomWord() {
+        var numOfWords = (int) wordRepository.count();
+        var randomId = new Random().nextInt(numOfWords) + 1;
+        var word = wordRepository.findById(randomId).orElseThrow();
+        cacheService.set("dailyWord", word.getValue());
+    }
+
+    public String getSolution() {
+        return cacheService.get("dailyWord");
+    }
+
     public GuessResponse guessWord(@NonNull final GuessRequest request) {
-        var word = "PIPPO".toUpperCase().trim();
+        var word = cacheService.get("dailyWord", "word").toUpperCase().trim();
         var guess = request.getGuess().toUpperCase().trim();
         var correctGuess = guess.equals(word);
         var correctPositions = getCorrectPositions(word, guess);
