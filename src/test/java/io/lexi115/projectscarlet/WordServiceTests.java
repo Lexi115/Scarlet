@@ -1,6 +1,8 @@
 package io.lexi115.projectscarlet;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import io.lexi115.projectscarlet.words.WordService;
 import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.Test;
 
@@ -12,9 +14,9 @@ public class WordServiceTests {
     @Test
     void test() {
         var word = "pippo";
-        var guess = "ppipo";
+        var guess = "pappi";
         var guessed = wordService.guessWord(word, guess);
-        var mismatches = wordService.findDisplacements(word, guess);
+        var mismatches = wordService.countMisplacedCharacters(word, guess);
         mismatches.forEach((ch, occ) -> System.out.println("letter: " + ch + " | occ: " + occ));
         assertTrue(guessed);
     }
