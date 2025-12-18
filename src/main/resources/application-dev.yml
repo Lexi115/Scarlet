@@ -5,6 +5,10 @@ spring:
     password: ${DATABASE_PASSWORD}
   jpa:
     show-sql: true
+  data:
+    redis:
+      host: redis
+      port: 6379
 logging:
   file:
     name: /app/logs/scarlet-dev.log

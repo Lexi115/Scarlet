@@ -44,9 +44,21 @@ services:
     depends_on:
       - db
 
+  # Redis Server
+  redis:
+    container_name: redis
+    image: redis:8.4.0-alpine
+    restart: on-failure
+    networks:
+      - network
+    volumes:
+      - redis_data:/data
+    command: ["redis-server"]
+
 volumes:
   # Database volume.
   db_data:
+  redis_data:
 
 networks:
   network:
