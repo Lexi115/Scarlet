@@ -20,11 +20,12 @@ public class WordService {
 
     private ScarletConfig scarletConfig;
 
-    public void chooseRandomWord() {
+    public String chooseRandomWord() {
         var numOfWords = (int) wordRepository.count();
         var randomId = new Random().nextInt(numOfWords) + 1;
-        var word = wordRepository.findById(randomId).orElseThrow();
-        cacheService.set(DAILY_WORD_KEY, word.getValue());
+        var wordString = wordRepository.findById(randomId).orElseThrow().getValue();
+        cacheService.set(DAILY_WORD_KEY, wordString);
+        return wordString;
     }
 
     public SolutionResponse getSolution() {
