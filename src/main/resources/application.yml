@@ -11,3 +11,8 @@ jwt:
 
 scarlet:
   default-word: world
+
+scheduler:
+  jobs:
+    daily-word:
+      cron: '0/30 * * * * *'
