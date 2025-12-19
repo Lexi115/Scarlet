@@ -22,7 +22,7 @@ public class WordController {
     }
 
     @GetMapping("/solution")
-    public String getSolution() {
+    public SolutionResponse getSolution() {
         return wordService.getSolution();
     }
 }
