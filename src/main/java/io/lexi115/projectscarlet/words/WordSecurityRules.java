@@ -32,7 +32,7 @@ public class WordSecurityRules implements SecurityRules {
                 .requestMatchers(HttpMethod.POST, BASE_PATH + "/guess").permitAll()
 
                 // Choose random word
-                .requestMatchers(HttpMethod.POST, BASE_PATH + "/randomWord").hasRole(UserRole.ADMIN.name())
+                .requestMatchers(HttpMethod.POST, BASE_PATH + "/randomWord").hasRole(UserRole.ADMIN)
 
                 // Get solution
                 .requestMatchers(HttpMethod.GET, BASE_PATH + "/solution").permitAll();

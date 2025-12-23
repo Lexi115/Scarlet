@@ -6,7 +6,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
 import java.util.UUID;
 
 /**
@@ -47,21 +47,18 @@ public record CustomUserDetails(User user) implements UserDetails {
     }
 
     /**
-     * Retrieves the role of the user.
-     *
-     * @return the role of the user as an instance of the {@code Role} enum.
-     */
-    public UserRole getRole() {
-        return user.getRole();
-    }
-
-    /**
      * Retrieves the authorities granted to the user.
      *
      * @return a collection of granted authorities associated with the user.
      */
     @Override
     public @NonNull Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
+        var authorities = new HashSet<GrantedAuthority>();
+        user.getRoles().forEach(role -> {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getAuthority()));
+            role.getOperations().forEach(operation
+                    -> authorities.add(new SimpleGrantedAuthority("OP_" + operation.getAuthority())));
+        });
+        return authorities;
     }
 }

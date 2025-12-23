@@ -29,6 +29,7 @@ public class UserService {
     public UserSummary createUser(@NonNull final CreateUserRequest request) {
         try {
             var user = userMapper.toUser(request);
+            user.addRole(new UserRole(UserRole.DEFAULT));
             userRepository.saveAndFlush(user);
             return userMapper.toSummary(user);
         } catch (DataIntegrityViolationException e) {
