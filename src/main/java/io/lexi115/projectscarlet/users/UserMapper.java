@@ -16,7 +16,6 @@ public class UserMapper {
     public @NonNull UserSummary toSummary(@NonNull final User user) {
         var summary = new UserSummary();
         summary.setUsername(user.getUsername());
-        summary.setRole(user.getRole());
         summary.setWins(user.getWins());
         return summary;
     }

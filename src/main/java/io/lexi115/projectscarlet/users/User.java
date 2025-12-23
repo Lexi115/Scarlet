@@ -1,13 +1,17 @@
 package io.lexi115.projectscarlet.users;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
 @Table(name = "users")
-@Data
+@Getter
+@Setter
 public class User {
 
     @Id
@@ -21,10 +25,22 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "role", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private UserRole role = UserRole.DEFAULT;
+    @ManyToMany
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<UserRole> roles = new HashSet<>();
 
     @Column(name = "wins", nullable = false)
     private Integer wins = 0;
+
+    public void addRole(final UserRole role) {
+        roles.add(role);
+    }
+
+    public void removeRole(final UserRole role) {
+        roles.remove(role);
+    }
 }

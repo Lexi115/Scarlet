@@ -1,4 +1,4 @@
-package io.lexi115.projectscarlet.users;
+package io.lexi115.projectscarlet.auth;
 
 import io.lexi115.projectscarlet.security.SecurityRules;
 import org.springframework.http.HttpMethod;
@@ -7,15 +7,15 @@ import org.springframework.security.config.annotation.web.configurers.AuthorizeH
 import org.springframework.stereotype.Component;
 
 /**
- * Class implementing security rules specifically for endpoints under the <code>/users</code> path.
+ * Class implementing security rules specifically for endpoints under the <code>/auth</code> path.
  */
 @Component
-public class UserSecurityRules implements SecurityRules {
+public class AuthSecurityRules implements SecurityRules {
 
     /**
      * The base path for all auth endpoints.
      */
-    private static final String BASE_PATH = "/users";
+    private static final String BASE_PATH = "/auth";
 
     /**
      * Configures security rules.
@@ -27,13 +27,7 @@ public class UserSecurityRules implements SecurityRules {
             final AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry
     ) {
         registry
-                // Get user by ID
-                .requestMatchers(HttpMethod.GET, BASE_PATH + "/{id}").hasRole(UserRole.ADMIN)
-
-                // Get user by username
-                .requestMatchers(HttpMethod.GET, BASE_PATH + "/{username}").permitAll()
-
-                // Create user
-                .requestMatchers(HttpMethod.POST, BASE_PATH).permitAll();
+                // Login
+                .requestMatchers(HttpMethod.POST, BASE_PATH + "/login").permitAll();
     }
 }
