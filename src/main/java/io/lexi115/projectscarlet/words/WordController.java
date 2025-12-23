@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/words")
+@CrossOrigin
 @AllArgsConstructor
 public class WordController {
 
