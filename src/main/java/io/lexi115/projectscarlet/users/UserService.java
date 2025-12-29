@@ -3,6 +3,7 @@ package io.lexi115.projectscarlet.users;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +15,7 @@ public class UserService {
 
     private final UserMapper userMapper;
     private UserRepository userRepository;
+    private PasswordEncoder passwordEncoder;
 
     public UserSummary getUserById(@NonNull final UUID id) {
         var user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id.toString()));
@@ -29,6 +31,7 @@ public class UserService {
     public UserSummary createUser(@NonNull final CreateUserRequest request) {
         try {
             var user = userMapper.toUser(request);
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.addRole(new UserRole(UserRole.DEFAULT));
             userRepository.saveAndFlush(user);
             return userMapper.toSummary(user);
