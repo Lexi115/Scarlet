@@ -83,11 +83,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(final HttpSecurity http) {
         http
+                .csrf(AbstractHttpConfigurer::disable)
+
                 // Setup security rules for different endpoints.
                 .authorizeHttpRequests(c -> {
                     securityRulesCollection.forEach(r -> r.configure(c));
                     // Any other request requires users to be authenticated.
-                    c.anyRequest().authenticated();
+                    c
+                            .requestMatchers("/error").permitAll()
+                            .anyRequest().authenticated();
                 });
 
         return http.build();
