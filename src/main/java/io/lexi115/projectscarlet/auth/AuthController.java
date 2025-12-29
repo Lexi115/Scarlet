@@ -1,7 +1,7 @@
 package io.lexi115.projectscarlet.auth;
 
 import io.lexi115.projectscarlet.errors.ErrorResponse;
-import io.lexi115.projectscarlet.users.AuthenticatedUserSummary;
+import io.lexi115.projectscarlet.users.UserDetailsSummary;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.apache.tomcat.websocket.AuthenticationException;
@@ -16,8 +16,13 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public AuthenticatedUserSummary login(@Valid @RequestBody final LoginRequest request) {
+    public UserDetailsSummary login(@Valid @RequestBody final LoginRequest request) {
         return authService.login(request);
+    }
+
+    @GetMapping("/me")
+    public UserDetailsSummary getAuthenticatedUser() {
+        return authService.getAuthenticatedUser();
     }
 
     @ExceptionHandler(AuthenticationException.class)

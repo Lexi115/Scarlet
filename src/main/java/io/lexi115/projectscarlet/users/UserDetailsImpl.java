@@ -15,7 +15,7 @@ import java.util.UUID;
  *
  * @param user The user entity.
  */
-public record CustomUserDetails(User user) implements UserDetails {
+public record UserDetailsImpl(User user) implements UserDetails {
 
     /**
      * Retrieves the unique identifier (UUID) of the user.

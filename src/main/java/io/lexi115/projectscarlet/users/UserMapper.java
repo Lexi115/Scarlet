@@ -23,12 +23,13 @@ public class UserMapper {
         return summary;
     }
 
-    public @NonNull AuthenticatedUserSummary toAuthenticatedSummary(@NonNull final UserDetails userDetails) {
-        var summary = new AuthenticatedUserSummary();
+    public @NonNull UserDetailsSummary toSummary(@NonNull final UserDetails userDetails) {
+        var summary = new UserDetailsSummary();
         summary.setUsername(userDetails.getUsername());
         var roles = new HashSet<UserRoleSummary>();
         userDetails.getAuthorities().forEach(authority -> {
             var authorityName = authority.getAuthority();
+            // Consider only granted authorities that start with "ROLE_"
             if (authorityName != null && authorityName.startsWith("ROLE_")) {
                 roles.add(new UserRoleSummary(authorityName.substring(5)));
             }
