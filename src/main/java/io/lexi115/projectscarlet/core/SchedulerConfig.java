@@ -1,4 +1,4 @@
-package io.lexi115.projectscarlet.configs;
+package io.lexi115.projectscarlet.core;
 
 import io.lexi115.projectscarlet.words.WordService;
 import lombok.AllArgsConstructor;
