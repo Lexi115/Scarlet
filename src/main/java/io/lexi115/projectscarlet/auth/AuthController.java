@@ -1,11 +1,11 @@
 package io.lexi115.projectscarlet.auth;
 
 import io.lexi115.projectscarlet.errors.ErrorResponse;
+import io.lexi115.projectscarlet.users.AuthenticatedUserSummary;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,7 +16,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public Authentication login(@Valid @RequestBody final LoginRequest request) {
+    public AuthenticatedUserSummary login(@Valid @RequestBody final LoginRequest request) {
         return authService.login(request);
     }
 

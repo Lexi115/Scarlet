@@ -27,9 +27,6 @@ public class UserSecurityRules implements SecurityRules {
             final AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry
     ) {
         registry
-                // Get user by ID
-                .requestMatchers(HttpMethod.GET, BASE_PATH + "/{id}").hasRole(UserRole.ADMIN)
-
                 // Get user by username
                 .requestMatchers(HttpMethod.GET, BASE_PATH + "/{username}").permitAll()
 

@@ -16,7 +16,7 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/{username}")
-    public UserSummary getUserByUsername(@PathVariable("username") @NotBlank final String username) {
+    public UserSummary getUserByUsername(@PathVariable @NotBlank final String username) {
         return userService.getUserByUsername(username);
     }
 
