@@ -12,20 +12,20 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 @RestControllerAdvice
 public class GlobalErrorHandler {
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse onIllegalArgument(@NonNull final IllegalArgumentException e) {
         return new ErrorResponse(e.getMessage());
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({MethodArgumentNotValidException.class, MethodArgumentTypeMismatchException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse onBadRequestArguments() {
         return new ErrorResponse("One or more arguments provided are invalid.");
     }
 
-    @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse onDataIntegrityViolation() {
         return new ErrorResponse("Data integrity violation.");
     }
