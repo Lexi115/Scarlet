@@ -1,4 +1,4 @@
-package io.lexi115.projectscarlet.configs;
+package io.lexi115.projectscarlet.core;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

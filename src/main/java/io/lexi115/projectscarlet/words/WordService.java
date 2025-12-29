@@ -1,7 +1,7 @@
 package io.lexi115.projectscarlet.words;
 
 import io.lexi115.projectscarlet.cache.CacheService;
-import io.lexi115.projectscarlet.configs.ScarletConfig;
+import io.lexi115.projectscarlet.core.ScarletConfig;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.stereotype.Service;

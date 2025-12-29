@@ -1,4 +1,4 @@
-package io.lexi115.projectscarlet.configs;
+package io.lexi115.projectscarlet.cache;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
