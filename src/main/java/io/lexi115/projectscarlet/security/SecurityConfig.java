@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -41,7 +42,6 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-
     /**
      * Creates and configures an {@link AuthenticationManager} bean for application-wide use.
      *
@@ -63,17 +63,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(final HttpSecurity http) {
         http
+                .sessionManagement(configurer
+                        -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
-                // Setup security rules for different endpoints.
                 .authorizeHttpRequests(registry -> {
                     securityRulesCollection.forEach(rules -> rules.configure(registry));
-                    // Any other request requires users to be authenticated.
                     registry
                             .requestMatchers("/error").permitAll()
                             .anyRequest().authenticated();
                 })
-                // Change the default error status code when accessing endpoints that require users to be authenticated
-                // to 401 (Unauthorized) instead of 403 (Forbidden).
                 .exceptionHandling(configurer -> {
                     configurer.authenticationEntryPoint(
                             new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
