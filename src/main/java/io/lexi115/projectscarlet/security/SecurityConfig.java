@@ -1,5 +1,7 @@
 package io.lexi115.projectscarlet.security;
 
+import io.lexi115.projectscarlet.auth.jwt.JwtAuthorizationFilter;
+import jakarta.servlet.Filter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.util.Collection;
 
@@ -31,6 +34,8 @@ public class SecurityConfig {
      * The individual security rules classes.
      */
     private final Collection<SecurityRules> securityRulesCollection;
+
+    private final Filter jwtAuthorizationFilter;
 
     /**
      * Creates and configures a {@link PasswordEncoder} bean for application-wide use.
@@ -77,7 +82,8 @@ public class SecurityConfig {
                             new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
                     configurer.accessDeniedHandler((req, resp, e)
                             -> resp.setStatus(HttpStatus.FORBIDDEN.value()));
-                });
+                })
+                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }

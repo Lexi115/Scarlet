@@ -1,4 +1,4 @@
-package io.lexi115.projectscarlet.jwt;
+package io.lexi115.projectscarlet.auth.jwt;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
