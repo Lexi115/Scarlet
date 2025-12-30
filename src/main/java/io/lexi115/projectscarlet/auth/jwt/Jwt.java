@@ -6,24 +6,13 @@ import lombok.*;
 import java.util.Date;
 import java.util.Map;
 
+@AllArgsConstructor
 @Getter
 @Setter
 public class Jwt {
 
     @NonNull
     private Map<String, Object> claims;
-
-    public Jwt(
-            final String subject,
-            final Date issuedAt,
-            final Date expiration,
-            @NonNull final Map<String, Object> claims
-    ) {
-        this.claims = claims;
-        this.claims.put(Claims.SUBJECT, subject);
-        this.claims.put(Claims.ISSUED_AT, issuedAt);
-        this.claims.put(Claims.EXPIRATION, expiration);
-    }
 
     public String getSubject() {
         return getClaim(Claims.SUBJECT, String.class);
@@ -33,19 +22,19 @@ public class Jwt {
         claims.put(Claims.SUBJECT, subject);
     }
 
-    public Date getIssuedAt() {
-        return getClaim(Claims.ISSUED_AT, Date.class);
+    public Long getIssuedAt() {
+        return getClaim(Claims.ISSUED_AT, Long.class);
     }
 
-    public void setIssuedAt(final Date issuedAt) {
+    public void setIssuedAt(final Long issuedAt) {
         claims.put(Claims.ISSUED_AT, issuedAt);
     }
 
-    public Date getExpiration() {
-        return getClaim(Claims.EXPIRATION, Date.class);
+    public Long getExpiration() {
+        return getClaim(Claims.EXPIRATION, Long.class);
     }
 
-    public void setExpiration(final Date expiration) {
+    public void setExpiration(final Long expiration) {
         claims.put(Claims.EXPIRATION, expiration);
     }
 
@@ -58,6 +47,6 @@ public class Jwt {
     }
 
     public boolean isExpired() {
-        return getExpiration().before(new Date());
+        return new Date(getExpiration()).before(new Date());
     }
 }

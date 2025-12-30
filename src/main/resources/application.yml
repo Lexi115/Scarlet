@@ -3,6 +3,8 @@ spring:
     name: scarlet
   profiles:
     active: dev
+  jpa:
+    open-in-view: false
 
 jwt:
   secret: ${JWT_SECRET}
