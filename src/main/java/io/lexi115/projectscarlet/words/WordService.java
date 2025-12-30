@@ -2,29 +2,39 @@ package io.lexi115.projectscarlet.words;
 
 import io.lexi115.projectscarlet.cache.CacheService;
 import io.lexi115.projectscarlet.core.ScarletConfig;
-import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
-@AllArgsConstructor
 public class WordService {
 
     private final String DAILY_WORD_KEY = "dailyWord";
 
-    private CacheService cacheService;
+    private final CacheService cacheService;
 
-    private WordRepository wordRepository;
+    private final WordRepository wordRepository;
 
-    private ScarletConfig scarletConfig;
+    private final ScarletConfig scarletConfig;
+
+    public WordService(
+            final CacheService cacheService,
+            final WordRepository wordRepository,
+            final ScarletConfig scarletConfig
+    ) {
+        this.cacheService = cacheService;
+        this.wordRepository = wordRepository;
+        this.scarletConfig = scarletConfig;
+        chooseRandomWord();
+    }
 
     public String chooseRandomWord() {
         var numOfWords = (int) wordRepository.count();
         var randomId = new Random().nextInt(numOfWords) + 1;
         var wordString = wordRepository.findById(randomId).orElseThrow().getValue();
         cacheService.set(DAILY_WORD_KEY, wordString);
+        cacheService.set("guessId", UUID.randomUUID().toString());
         return wordString;
     }
 

@@ -1,5 +1,7 @@
 package io.lexi115.projectscarlet.users;
 
+import io.lexi115.projectscarlet.cache.CacheService;
+import io.lexi115.projectscarlet.words.GuessResponse;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -14,13 +16,9 @@ import java.util.UUID;
 public class UserService {
 
     private final UserMapper userMapper;
+    private final CacheService cacheService;
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
-
-    public UserSummary getUserById(@NonNull final UUID id) {
-        var user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id.toString()));
-        return userMapper.toSummary(user);
-    }
 
     public UserSummary getUserByUsername(@NonNull final String username) {
         var user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
@@ -38,5 +36,19 @@ public class UserService {
         } catch (DataIntegrityViolationException e) {
             throw new UserAlreadyExistsException(request.getUsername());
         }
+    }
+
+    @Transactional
+    public void incrementUserWins(@NonNull final GuessResponse guessResponse, @NonNull final String username) {
+        var user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
+        var guessId = cacheService.get("guessId");
+        var userLastGuessId = user.getLastGuessId();
+        // Do not increment wins if user already solved current word or guessed wrong
+        if ((userLastGuessId != null && userLastGuessId.toString().equals(guessId)) || !guessResponse.isCorrect()) {
+            return;
+        }
+        user.setWins(user.getWins() + 1);
+        user.setLastGuessId(UUID.fromString(guessId));
+        userRepository.save(user);
     }
 }

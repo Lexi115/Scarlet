@@ -3,7 +3,6 @@ package io.lexi115.projectscarlet.auth;
 import io.lexi115.projectscarlet.auth.jwt.JwtService;
 import io.lexi115.projectscarlet.users.UserDetailsSummary;
 import io.lexi115.projectscarlet.users.UserMapper;
-import io.lexi115.projectscarlet.users.UserNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,8 +32,8 @@ public class AuthService {
     public UserDetailsSummary getAuthenticatedUser() {
         var context = SecurityContextHolder.getContext();
         var authentication = context.getAuthentication();
-        if (authentication == null) {
-            throw new UserNotFoundException("Could not find user in context");
+        if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails)) {
+            return null;
         }
         var userDetails = (UserDetails) Objects.requireNonNull(authentication.getPrincipal());
         return userMapper.toSummary(userDetails);
