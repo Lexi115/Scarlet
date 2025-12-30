@@ -36,6 +36,9 @@ public class User {
     @Column(name = "wins", nullable = false)
     private Integer wins = 0;
 
+    @Column(name = "last_guess_id")
+    private UUID lastGuessId;
+
     public void addRole(final UserRole role) {
         roles.add(role);
     }

@@ -1,25 +1,12 @@
 package io.lexi115.projectscarlet.cache;
 
-import lombok.AllArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Service;
+import lombok.NonNull;
 
-@Service
-@AllArgsConstructor
-public class CacheService {
+public interface CacheService {
 
-    private RedisTemplate<String, String> template;
+    String get(@NonNull String key);
 
-    public String get(final String key) {
-        return template.opsForValue().get(key);
-    }
+    String get(@NonNull String key, String defaultValue);
 
-    public String get(final String key, final String defaultValue) {
-        var value = template.opsForValue().get(key);
-        return value != null ? value : defaultValue;
-    }
-
-    public void set(final String key, final String value) {
-        template.opsForValue().set(key, value);
-    }
+    void set(@NonNull String key, String value);
 }
