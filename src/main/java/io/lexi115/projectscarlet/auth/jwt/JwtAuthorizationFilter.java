@@ -1,5 +1,6 @@
 package io.lexi115.projectscarlet.auth.jwt;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -7,7 +8,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -28,37 +31,76 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             @NonNull final HttpServletResponse response,
             @NonNull final FilterChain filterChain
     ) throws ServletException, IOException {
+        // Check security context (is user already authenticated?)
+        var context = SecurityContextHolder.getContext();
+        if (context.getAuthentication() != null) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        // Get JWT string from Authorization request header
+        var token = getTokenFromRequest(request);
+        if (token == null) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        // Parse JWT from string
+        var jwt = parseJwtFromToken(token);
+        if (jwt == null) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        // Get corresponding user details
+        var userDetails = getUserFromJwt(jwt);
+        if (userDetails == null) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        // Validate JWT
+        if (!jwtService.validateJwt(jwt, userDetails)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        // Set user in security context
+        var authentication = getAuthenticationFromUserDetails(userDetails, request);
+        context.setAuthentication(authentication);
+        filterChain.doFilter(request, response);
+    }
+
+    private String getTokenFromRequest(final @NonNull HttpServletRequest request) {
         var authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            System.out.println("111111");
-            filterChain.doFilter(request, response);
-            return;
+            return null;
         }
-        var jwt = jwtService.decodeJwt(authHeader.trim().substring(7));
+        return authHeader;
+    }
+
+    private Jwt parseJwtFromToken(final @NonNull String token) {
+        try {
+            return jwtService.decodeJwt(token.trim().substring(7));
+        } catch (JwtException e) {
+            return null;
+        }
+    }
+
+    private UserDetails getUserFromJwt(final @NonNull Jwt jwt) {
         var jwtSubject = jwt.getSubject();
-        var context = SecurityContextHolder.getContext();
-        if (context.getAuthentication() != null || jwtSubject == null) {
-            System.out.println("222222");
-            filterChain.doFilter(request, response);
-            return;
+        if (jwtSubject == null) {
+            return null;
         }
         try {
-            var userDetails = userDetailsService.loadUserByUsername(jwtSubject);
-            if (!jwtService.validateJwt(jwt, userDetails)) {
-                System.out.println("3333333");
-                filterChain.doFilter(request, response);
-                return;
-            }
-            var authentication = new UsernamePasswordAuthenticationToken(
-                    userDetails.getUsername(), null, userDetails.getAuthorities());
-            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            context.setAuthentication(authentication);
+            return userDetailsService.loadUserByUsername(jwtSubject);
         } catch (UsernameNotFoundException e) {
-            System.out.println("4444444");
-            filterChain.doFilter(request, response);
-            return;
+            return null;
         }
-        System.out.println("5555555");
-        filterChain.doFilter(request, response);
+    }
+
+    private Authentication getAuthenticationFromUserDetails(
+            final UserDetails userDetails,
+            final HttpServletRequest request
+    ) {
+        var authentication = new UsernamePasswordAuthenticationToken(
+                userDetails.getUsername(), null, userDetails.getAuthorities());
+        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        return authentication;
     }
 }
