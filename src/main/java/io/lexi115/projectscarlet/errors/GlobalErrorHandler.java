@@ -1,5 +1,6 @@
 package io.lexi115.projectscarlet.errors;
 
+import io.jsonwebtoken.JwtException;
 import lombok.NonNull;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -28,5 +29,11 @@ public class GlobalErrorHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse onDataIntegrityViolation() {
         return new ErrorResponse("Data integrity violation.");
+    }
+
+    @ExceptionHandler(JwtException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorResponse onJwtException() {
+        return new ErrorResponse("Invalid JWT.");
     }
 }
