@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,7 +32,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             @NonNull final HttpServletResponse response,
             @NonNull final FilterChain filterChain
     ) throws ServletException, IOException {
-        // Check security context (is user already authenticated?)
+        // Check security context
         var context = SecurityContextHolder.getContext();
         if (context.getAuthentication() != null) {
             filterChain.doFilter(request, response);
@@ -66,7 +67,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private String getTokenFromRequest(final @NonNull HttpServletRequest request) {
+    private @Nullable String getTokenFromRequest(final @NonNull HttpServletRequest request) {
         var authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return null;
@@ -74,15 +75,16 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         return authHeader;
     }
 
-    private Jwt parseJwtFromToken(final @NonNull String token) {
+    private @Nullable Jwt parseJwtFromToken(final @NonNull String token) {
         try {
+            // Remove the "Bearer " prefix
             return jwtService.decodeJwt(token.trim().substring(7));
         } catch (JwtException e) {
             return null;
         }
     }
 
-    private UserDetails getUserFromJwt(final @NonNull Jwt jwt) {
+    private @Nullable UserDetails getUserFromJwt(final @NonNull Jwt jwt) {
         var jwtSubject = jwt.getSubject();
         if (jwtSubject == null) {
             return null;
@@ -94,12 +96,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         }
     }
 
-    private Authentication getAuthenticationFromUserDetails(
-            final UserDetails userDetails,
-            final HttpServletRequest request
+    private @NonNull Authentication getAuthenticationFromUserDetails(
+            @NonNull final UserDetails userDetails,
+            @NonNull final HttpServletRequest request
     ) {
         var authentication = new UsernamePasswordAuthenticationToken(
-                userDetails.getUsername(), null, userDetails.getAuthorities());
+                userDetails, null, userDetails.getAuthorities());
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         return authentication;
     }

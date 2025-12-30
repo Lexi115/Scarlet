@@ -1,0 +1,1 @@
+ALTER TABLE users ADD COLUMN last_guess_id BINARY(16) NULL AFTER wins
