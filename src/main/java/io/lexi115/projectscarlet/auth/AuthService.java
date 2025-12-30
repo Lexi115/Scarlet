@@ -1,6 +1,6 @@
 package io.lexi115.projectscarlet.auth;
 
-import io.lexi115.projectscarlet.jwt.JwtService;
+import io.lexi115.projectscarlet.auth.jwt.JwtService;
 import io.lexi115.projectscarlet.users.UserDetailsSummary;
 import io.lexi115.projectscarlet.users.UserMapper;
 import io.lexi115.projectscarlet.users.UserNotFoundException;
@@ -20,14 +20,14 @@ public class AuthService {
 
     private final UserMapper userMapper;
     private final JwtService jwtService;
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
     public LoginResponse login(final @NonNull LoginRequest request) {
         var credentials = new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword());
         var authentication = authenticationManager.authenticate(credentials);
         var userDetails = (UserDetails) Objects.requireNonNull(authentication.getPrincipal());
         var jwt = jwtService.createJwt(userDetails);
-        return new LoginResponse(jwt.encode());
+        return new LoginResponse(jwtService.encodeJwt(jwt));
     }
 
     public UserDetailsSummary getAuthenticatedUser() {

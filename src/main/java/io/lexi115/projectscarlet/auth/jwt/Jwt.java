@@ -1,10 +1,8 @@
-package io.lexi115.projectscarlet.jwt;
+package io.lexi115.projectscarlet.auth.jwt;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import lombok.*;
 
-import java.security.Key;
 import java.util.Date;
 import java.util.Map;
 
@@ -15,21 +13,16 @@ public class Jwt {
     @NonNull
     private Map<String, Object> claims;
 
-    @NonNull
-    private Key signatureKey;
-
     public Jwt(
             final String subject,
             final Date issuedAt,
             final Date expiration,
-            @NonNull final Map<String, Object> claims,
-            @NonNull final Key signatureKey
+            @NonNull final Map<String, Object> claims
     ) {
         this.claims = claims;
         this.claims.put(Claims.SUBJECT, subject);
         this.claims.put(Claims.ISSUED_AT, issuedAt);
         this.claims.put(Claims.EXPIRATION, expiration);
-        this.signatureKey = signatureKey;
     }
 
     public String getSubject() {
@@ -66,12 +59,5 @@ public class Jwt {
 
     public boolean isExpired() {
         return getExpiration().before(new Date());
-    }
-
-    public @NonNull String encode() {
-        return Jwts.builder()
-                .claims(claims)
-                .signWith(signatureKey)
-                .compact();
     }
 }
