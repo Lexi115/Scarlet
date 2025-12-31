@@ -5,6 +5,12 @@ import lombok.NonNull;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+/**
+ * Implementation of {@link CacheService} that provides interaction with a Redis server for caching values.
+ *
+ * @author Lexi115
+ * @since 1.0
+ */
 @Service
 @AllArgsConstructor
 public class RedisCacheService implements CacheService {
