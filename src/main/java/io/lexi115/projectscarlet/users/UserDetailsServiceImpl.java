@@ -1,6 +1,5 @@
 package io.lexi115.projectscarlet.users;
 
-
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,12 +8,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 /**
- * This service provides custom user authentication details for integration with Spring Security.
+ * Custom implementation of {@link UserDetailsService} that loads users from the app's MySQL database.
+ *
+ * @author Lexi115
+ * @since 1.0
  */
 @Service
 @AllArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
-
     /**
      * The user repository.
      */
@@ -24,9 +25,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      * Loads the user details associated with the given username.
      * This method is used internally by Spring Security to authenticate the user.
      *
-     * @param username the username of the user to be loaded.
-     * @return the user details associated with the given username.
-     * @throws UsernameNotFoundException if no user is found with the specified username.
+     * @param username The username of the user to be loaded.
+     * @return The user details associated with the given username.
+     * @throws UsernameNotFoundException If no user is found with the specified username.
+     * @since 1.0
      */
     @Override
     @NonNull
