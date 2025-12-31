@@ -5,14 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * DTO representing a login response.
+ * DTO representing an access token refresh response.
  *
  * @author Lexi115
  * @since 1.0
  */
 @Data
 @AllArgsConstructor
-public class LoginResponse {
+public class RefreshResponse {
     /**
      * The access token.
      */

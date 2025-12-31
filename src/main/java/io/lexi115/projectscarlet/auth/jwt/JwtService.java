@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,31 +28,44 @@ public class JwtService {
      */
     private final JwtConfig jwtConfig;
 
-    /**
-     * Creates a new JWT based on the provided {@link UserDetails}.
-     *
-     * @param userDetails The user details.
-     * @return The newly created JWT.
-     * @since 1.0
-     */
-    public Jwt createJwt(final @NonNull UserDetails userDetails) {
-        return createJwt(userDetails, new HashMap<>());
+    public Jwt createAccessJwt(final @NonNull UserDetails userDetails) {
+        return createJwt(userDetails, jwtConfig.getAccessTokenDuration());
+    }
+
+    public Jwt createRefreshJwt(final @NonNull UserDetails userDetails) {
+        return createJwt(userDetails, jwtConfig.getRefreshTokenDuration());
     }
 
     /**
      * Creates a new JWT based on the provided {@link UserDetails}.
      *
      * @param userDetails The user details.
+     * @param duration The duration (in seconds) of the JWT after which it will expire.
+     * @return The newly created JWT.
+     * @since 1.0
+     */
+    public Jwt createJwt(final @NonNull UserDetails userDetails, final long duration) {
+        return createJwt(userDetails, duration, new HashMap<>());
+    }
+
+    /**
+     * Creates a new JWT based on the provided {@link UserDetails}.
+     *
+     * @param userDetails The user details.
+     * @param duration The duration (in seconds) of the JWT after which it will expire.
      * @param extraClaims The extra fields to add into the JWT payload.
      * @return The newly created JWT.
      * @since 1.0
      */
-    public Jwt createJwt(final @NonNull UserDetails userDetails, final @NonNull Map<String, Object> extraClaims) {
-        var nowMillis = System.currentTimeMillis();
+    public Jwt createJwt(
+            final @NonNull UserDetails userDetails,
+            final long duration,
+            final @NonNull Map<String, Object> extraClaims) {
+        var nowSeconds = Instant.now().getEpochSecond();
         var claims = new HashMap<String, Object>();
         claims.put(Claims.SUBJECT, userDetails.getUsername());
-        claims.put(Claims.ISSUED_AT, nowMillis);
-        claims.put(Claims.EXPIRATION, nowMillis + jwtConfig.getAccessTokenExpiration());
+        claims.put(Claims.ISSUED_AT, nowSeconds);
+        claims.put(Claims.EXPIRATION, nowSeconds + duration);
         claims.putAll(extraClaims);
         return new Jwt(claims);
     }
