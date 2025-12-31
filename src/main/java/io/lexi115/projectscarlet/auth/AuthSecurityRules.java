@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class AuthSecurityRules implements SecurityRules {
-
     /**
      * The base path for the endpoints.
      */
