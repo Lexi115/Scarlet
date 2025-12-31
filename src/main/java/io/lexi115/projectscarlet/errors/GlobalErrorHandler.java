@@ -1,10 +1,10 @@
 package io.lexi115.projectscarlet.errors;
 
-import io.jsonwebtoken.JwtException;
 import lombok.NonNull;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestCookieException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -56,14 +56,14 @@ public class GlobalErrorHandler {
     }
 
     /**
-     * Method that handles JSON Web Token (JWT) exceptions.
+     * Method that handles exceptions when a required cookie is not found in the request.
      *
      * @return The error response.
      * @since 1.0
      */
-    @ExceptionHandler(JwtException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ErrorResponse onJwtException() {
-        return new ErrorResponse("Invalid JWT.");
+    @ExceptionHandler(MissingRequestCookieException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse onMissingRequestCookie(@NonNull final MissingRequestCookieException e) {
+        return new ErrorResponse("Missing request cookie: " + e.getCookieName());
     }
 }

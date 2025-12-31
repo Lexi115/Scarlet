@@ -31,6 +31,9 @@ public class AuthSecurityRules implements SecurityRules {
     ) {
         registry
                 // Login
-                .requestMatchers(HttpMethod.POST, BASE_PATH + "/login").permitAll();
+                .requestMatchers(HttpMethod.POST, BASE_PATH + "/login").permitAll()
+
+                // Refresh access token
+                .requestMatchers(HttpMethod.POST, BASE_PATH + "/refresh").permitAll();
     }
 }

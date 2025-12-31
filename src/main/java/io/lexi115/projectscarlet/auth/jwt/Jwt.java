@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.Map;
 
 /**
@@ -116,6 +116,6 @@ public class Jwt {
      * @since 1.0
      */
     public boolean isExpired() {
-        return new Date(getExpiration()).before(new Date());
+        return Instant.ofEpochSecond(getExpiration()).isBefore(Instant.now());
     }
 }

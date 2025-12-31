@@ -20,12 +20,12 @@ public class JwtConfig {
     private String secret;
 
     /**
-     * The access token expiration date (expressed in milliseconds).
+     * The access token duration (expressed in seconds).
      */
-    private Integer accessTokenExpiration;
+    private Integer accessTokenDuration;
 
     /**
-     * The refresh token expiration date (expressed in milliseconds).
+     * The refresh token duration (expressed in seconds).
      */
-    private Integer refreshTokenExpiration;
+    private Integer refreshTokenDuration;
 }
