@@ -76,8 +76,14 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public RefreshResponse refreshAccessToken(@CookieValue(name = "refreshToken") @NonNull final String refreshToken) {
-        return authService.refreshAccessToken(refreshToken);
+    public RefreshResponse refreshAccessToken(
+            @CookieValue(name = "refreshToken") @NonNull final String refreshToken,
+            final HttpServletResponse response
+    ) {
+        var refreshResponse = authService.refreshAccessToken(refreshToken);
+        var refreshTokenCookie = createRefreshTokenCookie(refreshResponse.getRefreshToken());
+        response.addCookie(refreshTokenCookie);
+        return refreshResponse;
     }
 
     private Cookie createRefreshTokenCookie(final String refreshToken) {

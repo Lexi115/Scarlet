@@ -63,14 +63,13 @@ public class AuthService {
     public RefreshResponse refreshAccessToken(final @NonNull String refreshToken) {
         var refreshJwt = jwtService.decodeJwt(refreshToken);
         var subject = refreshJwt.getSubject();
-        System.out.println("subj:" + subject);
-        System.out.println("exp:" + refreshJwt.isExpired());
         if (refreshJwt.isExpired() || subject == null) {
             throw new JwtException("Invalid refresh token");
         }
         var userDetails = userDetailsService.loadUserByUsername(subject);
-        var accessJwt = jwtService.createAccessJwt(userDetails);
-        return new RefreshResponse(jwtService.encodeJwt(accessJwt), jwtService.encodeJwt(refreshJwt));
+        var newAccessJwt = jwtService.createAccessJwt(userDetails);
+        var newRefreshJwt = jwtService.createRefreshJwt(userDetails);
+        return new RefreshResponse(jwtService.encodeJwt(newAccessJwt), jwtService.encodeJwt(newRefreshJwt));
     }
 
     /**
