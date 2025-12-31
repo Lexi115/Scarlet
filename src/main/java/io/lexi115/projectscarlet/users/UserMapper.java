@@ -6,9 +6,22 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 
+/**
+ * Mapper class used to convert user entities to their DTO counterparts and vice versa.
+ *
+ * @author Lexi115
+ * @since 1.0
+ */
 @Component
 public class UserMapper {
-
+    /**
+     * Converts a {@link CreateUserRequest} into a {@link User} entity. Note that the password in this phase is still
+     * in plain text.
+     *
+     * @param request The user creation request.
+     * @return The resulting user entity.
+     * @since 1.0
+     */
     public @NonNull User toUser(@NonNull final CreateUserRequest request) {
         var user = new User();
         user.setUsername(request.getUsername());
@@ -16,6 +29,13 @@ public class UserMapper {
         return user;
     }
 
+    /**
+     * Converts a {@link User} entity into a {@link UserSummary} DTO.
+     *
+     * @param user The user entity.
+     * @return The resulting user summary.
+     * @since 1.0
+     */
     public @NonNull UserSummary toSummary(@NonNull final User user) {
         var summary = new UserSummary();
         summary.setUsername(user.getUsername());
@@ -23,6 +43,13 @@ public class UserMapper {
         return summary;
     }
 
+    /**
+     * Converts {@link UserDetails} into a {@link UserDetailsSummary} DTO.
+     *
+     * @param userDetails The user details.
+     * @return The resulting user details summary.
+     * @since 1.0
+     */
     public @NonNull UserDetailsSummary toSummary(@NonNull final UserDetails userDetails) {
         var summary = new UserDetailsSummary();
         summary.setUsername(userDetails.getUsername());

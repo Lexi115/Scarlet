@@ -11,20 +11,56 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+/**
+ * Service class for user-related operations.
+ *
+ * @author Lexi115
+ * @since 1.0
+ */
 @Service
 @AllArgsConstructor
 public class UserService {
-
+    /**
+     * The user mapper.
+     */
     private final UserMapper userMapper;
+
+    /**
+     * The service used for caching values.
+     */
     private final CacheService cacheService;
+
+    /**
+     * The user repository.
+     */
     private UserRepository userRepository;
+
+    /**
+     * The password encoder.
+     */
     private PasswordEncoder passwordEncoder;
 
+    /**
+     * Gets a user by the username.
+     *
+     * @param username The username. Cannot be <code>null</code>.
+     * @return A summary of the retrieved user.
+     * @throws UserNotFoundException If the user is not found.
+     * @since 1.0
+     */
     public UserSummary getUserByUsername(@NonNull final String username) {
         var user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         return userMapper.toSummary(user);
     }
 
+    /**
+     * Creates a new user.
+     *
+     * @param request The user creation request.
+     * @return A summary of the created user.
+     * @throws UserAlreadyExistsException If the provided username is already in use.
+     * @since 1.0
+     */
     @Transactional
     public UserSummary createUser(@NonNull final CreateUserRequest request) {
         try {
@@ -38,6 +74,14 @@ public class UserService {
         }
     }
 
+    /**
+     * Increases the number of game wins for a certain player by 1, as long as he guessed correctly and for the first
+     * time since the last word has been chosen.
+     *
+     * @param guessResponse The outcome of the game.
+     * @param username      The player's username.
+     * @since 1.0
+     */
     @Transactional
     public void incrementUserWins(@NonNull final GuessResponse guessResponse, @NonNull final String username) {
         var user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));

@@ -1,5 +1,6 @@
 package io.lexi115.projectscarlet.users;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -7,29 +8,25 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.UUID;
 
 /**
  * A custom implementation of Spring Security's {@link UserDetails} interface.
- * It includes extra fields that are used to generate JWTs.
  *
- * @param user The user entity.
+ * @author Lexi115
+ * @since 1.0
  */
-public record UserDetailsImpl(User user) implements UserDetails {
-
+@AllArgsConstructor
+public class UserDetailsImpl implements UserDetails {
     /**
-     * Retrieves the unique identifier (UUID) of the user.
-     *
-     * @return the UUID of the user.
+     * The user entity.
      */
-    public UUID getId() {
-        return user.getId();
-    }
+    private User user;
 
     /**
      * Retrieves the username of the user.
      *
-     * @return the username of the user as a String.
+     * @return The username of the user.
+     * @since 1.0
      */
     @Override
     public @NonNull String getUsername() {
@@ -37,9 +34,10 @@ public record UserDetailsImpl(User user) implements UserDetails {
     }
 
     /**
-     * Retrieves the password of the associated user.
+     * Retrieves the (most likely hashed) password of the associated user.
      *
-     * @return the user's password as a {@code String}.
+     * @return The user's password.
+     * @since 1.0
      */
     @Override
     public String getPassword() {
@@ -49,7 +47,8 @@ public record UserDetailsImpl(User user) implements UserDetails {
     /**
      * Retrieves the authorities granted to the user.
      *
-     * @return a collection of granted authorities associated with the user.
+     * @return A collection of granted authorities associated with the user.
+     * @since 1.0
      */
     @Override
     public @NonNull Collection<? extends GrantedAuthority> getAuthorities() {
