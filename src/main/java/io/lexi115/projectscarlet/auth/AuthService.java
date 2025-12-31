@@ -13,14 +13,37 @@ import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
+/**
+ * Service class for authentication-related operations.
+ *
+ * @author Lexi115
+ * @since 1.0
+ */
 @Service
 @AllArgsConstructor
 public class AuthService {
-
-    private final UserMapper userMapper;
-    private final JwtService jwtService;
+    /**
+     * The authentication manager (the one that actually does the heavy lifting).
+     */
     private final AuthenticationManager authenticationManager;
 
+    /**
+     * The user mapper.
+     */
+    private final UserMapper userMapper;
+
+    /**
+     * The JWT service.
+     */
+    private final JwtService jwtService;
+
+    /**
+     * Requests a user login.
+     *
+     * @param request The login request.
+     * @return The login response, containing the access token.
+     * @since 1.0
+     */
     public LoginResponse login(final @NonNull LoginRequest request) {
         var credentials = new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword());
         var authentication = authenticationManager.authenticate(credentials);
@@ -29,6 +52,12 @@ public class AuthService {
         return new LoginResponse(jwtService.encodeJwt(jwt));
     }
 
+    /**
+     * Returns the authenticated user if present in the security context.
+     *
+     * @return A summary of the authenticated user's details.
+     * @since 1.0
+     */
     public UserDetailsSummary getAuthenticatedUser() {
         var context = SecurityContextHolder.getContext();
         var authentication = context.getAuthentication();

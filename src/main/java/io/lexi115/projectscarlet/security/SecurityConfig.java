@@ -1,6 +1,5 @@
 package io.lexi115.projectscarlet.security;
 
-import io.lexi115.projectscarlet.auth.jwt.JwtAuthorizationFilter;
 import jakarta.servlet.Filter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -21,26 +20,31 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import java.util.Collection;
 
 /**
- * Configuration class for setting up application security.
- * This class customizes Spring Security behavior, defines authentication mechanisms,
- * and establishes rules for securing application endpoints.
+ * Configuration class for setting up application security. It defines authentication mechanisms and establishes
+ * rules for securing application endpoints.
+ *
+ * @author Lexi115
+ * @since 1.0
  */
 @Configuration
 @EnableWebSecurity
 @AllArgsConstructor
 public class SecurityConfig {
-
     /**
      * The individual security rules classes.
      */
     private final Collection<SecurityRules> securityRulesCollection;
 
+    /**
+     * The JWT authorization filter.
+     */
     private final Filter jwtAuthorizationFilter;
 
     /**
      * Creates and configures a {@link PasswordEncoder} bean for application-wide use.
      *
-     * @return a {@code PasswordEncoder} instance.
+     * @return A {@code PasswordEncoder} instance.
+     * @since 1.0
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -50,8 +54,9 @@ public class SecurityConfig {
     /**
      * Creates and configures an {@link AuthenticationManager} bean for application-wide use.
      *
-     * @param config the {@link AuthenticationConfiguration} used to provide the authentication setup.
-     * @return an {@code AuthenticationManager} instance to manage authentication processes.
+     * @param config The {@link AuthenticationConfiguration} used to provide the authentication setup.
+     * @return An {@code AuthenticationManager} instance to manage authentication processes.
+     * @since 1.0
      */
     @Bean
     public AuthenticationManager authenticationManager(final AuthenticationConfiguration config) {
@@ -61,9 +66,9 @@ public class SecurityConfig {
     /**
      * Configures and returns a {@link SecurityFilterChain} bean for securing HTTP requests.
      *
-     * @param http the {@link HttpSecurity} instance used to define security configurations.
-     * @return a {@link SecurityFilterChain} instance representing the configured security chain.
-     * @throws Exception if any configuration error occurs during the creation of the security filter chain.
+     * @param http The {@link HttpSecurity} instance used to define security configurations.
+     * @return A {@link SecurityFilterChain} instance representing the configured security chain.
+     * @since 1.0
      */
     @Bean
     public SecurityFilterChain securityFilterChain(final HttpSecurity http) {

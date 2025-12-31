@@ -10,27 +10,57 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+/**
+ * Global error handler that captures generic exceptions.
+ *
+ * @author Lexi115
+ * @since 1.0
+ */
 @RestControllerAdvice
 public class GlobalErrorHandler {
-
+    /**
+     * Method that handles exceptions when illegal arguments are provided.
+     *
+     * @param e The exception.
+     * @return The error response.
+     * @since 1.0
+     */
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse onIllegalArgument(@NonNull final IllegalArgumentException e) {
         return new ErrorResponse(e.getMessage());
     }
 
+    /**
+     * Method that handles exceptions when bad request arguments are provided.
+     *
+     * @return The error response.
+     * @since 1.0
+     */
     @ExceptionHandler({MethodArgumentNotValidException.class, MethodArgumentTypeMismatchException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse onBadRequestArguments() {
         return new ErrorResponse("One or more arguments provided are invalid.");
     }
 
+    /**
+     * Method that handles exceptions when a data integrity violation occurs (for example a duplicate primary key).
+     *
+     * @return The error response.
+     * @since 1.0
+     */
     @ExceptionHandler(DataIntegrityViolationException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse onDataIntegrityViolation() {
         return new ErrorResponse("Data integrity violation.");
     }
 
+    /**
+     * Method that handles JSON Web Token (JWT) exceptions.
+     *
+     * @return The error response.
+     * @since 1.0
+     */
     @ExceptionHandler(JwtException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorResponse onJwtException() {

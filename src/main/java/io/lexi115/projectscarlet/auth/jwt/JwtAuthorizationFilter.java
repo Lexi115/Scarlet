@@ -20,12 +20,35 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+/**
+ * Filter that authorizes a user with the provided JSON Web Token (JWT) in the request header.
+ *
+ * @author Lexi115
+ * @since 1.0
+ */
 @Component
 @AllArgsConstructor
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
+    /**
+     * The JWT service.
+     */
     private final JwtService jwtService;
+
+    /**
+     * The user details service (used to retrieve the user from the database).
+     */
     private final UserDetailsService userDetailsService;
 
+    /**
+     * The filter logic.
+     *
+     * @param request     The HTTP request object.
+     * @param response    The HTTP response object.
+     * @param filterChain The filter chain.
+     * @throws ServletException If a servlet error occurs during execution.
+     * @throws IOException      If a I/O error occurs during execution.
+     * @since 1.0
+     */
     @Override
     protected void doFilterInternal(
             @NonNull final HttpServletRequest request,
@@ -51,7 +74,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             return;
         }
         // Get corresponding user details
-        var userDetails = getUserFromJwt(jwt);
+        var userDetails = getUserDetailsFromJwt(jwt);
         if (userDetails == null) {
             filterChain.doFilter(request, response);
             return;
@@ -84,7 +107,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         }
     }
 
-    private @Nullable UserDetails getUserFromJwt(final @NonNull Jwt jwt) {
+    private @Nullable UserDetails getUserDetailsFromJwt(final @NonNull Jwt jwt) {
         var jwtSubject = jwt.getSubject();
         if (jwtSubject == null) {
             return null;
