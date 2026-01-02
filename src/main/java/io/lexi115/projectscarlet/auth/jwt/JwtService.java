@@ -28,19 +28,21 @@ public class JwtService {
      */
     private final JwtConfig jwtConfig;
 
-    public Jwt createAccessJwt(final @NonNull UserDetails userDetails) {
-        return createJwt(userDetails, jwtConfig.getAccessTokenDuration());
+    public String createAccessToken(final @NonNull UserDetails userDetails) {
+        var jwt = createJwt(userDetails, jwtConfig.getAccessTokenDuration());
+        return encodeJwt(jwt);
     }
 
-    public Jwt createRefreshJwt(final @NonNull UserDetails userDetails) {
-        return createJwt(userDetails, jwtConfig.getRefreshTokenDuration());
+    public String createRefreshToken(final @NonNull UserDetails userDetails) {
+        var jwt = createJwt(userDetails, jwtConfig.getRefreshTokenDuration());
+        return encodeJwt(jwt);
     }
 
     /**
      * Creates a new JWT based on the provided {@link UserDetails}.
      *
      * @param userDetails The user details.
-     * @param duration The duration (in seconds) of the JWT after which it will expire.
+     * @param duration    The duration (in seconds) of the JWT after which it will expire.
      * @return The newly created JWT.
      * @since 1.0
      */
@@ -52,7 +54,7 @@ public class JwtService {
      * Creates a new JWT based on the provided {@link UserDetails}.
      *
      * @param userDetails The user details.
-     * @param duration The duration (in seconds) of the JWT after which it will expire.
+     * @param duration    The duration (in seconds) of the JWT after which it will expire.
      * @param extraClaims The extra fields to add into the JWT payload.
      * @return The newly created JWT.
      * @since 1.0

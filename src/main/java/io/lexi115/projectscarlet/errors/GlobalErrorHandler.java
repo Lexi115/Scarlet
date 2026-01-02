@@ -1,5 +1,6 @@
 package io.lexi115.projectscarlet.errors;
 
+import io.lexi115.projectscarlet.users.UserNotFoundException;
 import lombok.NonNull;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -66,5 +67,18 @@ public class GlobalErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse onMissingRequestCookie(@NonNull final MissingRequestCookieException e) {
         return new ErrorResponse("Missing request cookie: " + e.getCookieName());
+    }
+
+    /**
+     * Method that handles exceptions when a user is not found.
+     *
+     * @param e The exception.
+     * @return The error response.
+     * @since 1.0
+     */
+    @ExceptionHandler(UserNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse onUserNotFound(@NonNull final UserNotFoundException e) {
+        return new ErrorResponse(e.getMessage());
     }
 }

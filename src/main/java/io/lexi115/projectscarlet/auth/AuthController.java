@@ -75,6 +75,11 @@ public class AuthController {
         return loginResponse;
     }
 
+    @PostMapping("/logout")
+    public void logout(@CookieValue(name = "refreshToken") @NonNull final String refreshToken) {
+        authService.logout(refreshToken);
+    }
+
     @PostMapping("/refresh")
     public RefreshResponse refreshAccessToken(
             @CookieValue(name = "refreshToken") @NonNull final String refreshToken,
@@ -90,7 +95,7 @@ public class AuthController {
         return cookieService.createSecureCookie(
                 "refreshToken",
                 refreshToken,
-                "/auth/refresh",
+                "/auth",
                 scarletConfig.getRefreshTokenCookieDuration()
         );
     }
@@ -141,6 +146,6 @@ public class AuthController {
     @ExceptionHandler(JwtException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorResponse onJwtException() {
-        return new ErrorResponse("Invalid token.");
+        return new ErrorResponse("Invalid JWT.");
     }
 }
