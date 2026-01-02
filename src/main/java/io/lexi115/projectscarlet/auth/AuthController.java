@@ -145,7 +145,7 @@ public class AuthController {
      */
     @ExceptionHandler(JwtException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ErrorResponse onJwtException() {
-        return new ErrorResponse("Invalid JWT.");
+    public ErrorResponse onJwtException(final JwtException e) {
+        return new ErrorResponse("Invalid JWT: " + e.getMessage());
     }
 }

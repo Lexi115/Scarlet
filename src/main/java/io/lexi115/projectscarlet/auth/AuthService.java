@@ -65,8 +65,13 @@ public class AuthService {
 
     @Transactional
     public RefreshResponse refreshAccessToken(final @NonNull String oldRefreshToken) {
-        if (!refreshTokenService.refreshTokenExists(oldRefreshToken)) {
+        var oldToken = refreshTokenService.getRefreshTokenByString(oldRefreshToken);
+        if (oldToken == null) {
             throw new JwtException("Refresh token not found in DB!");
+        }
+        if (oldToken.isRevoked()) {
+            refreshTokenService.removeAllRefreshTokens(oldToken.getUserId());
+            throw new JwtException("Token is revoked!");
         }
         var refreshJwt = jwtService.decodeJwt(oldRefreshToken);
         var subject = refreshJwt.getSubject();
@@ -74,7 +79,7 @@ public class AuthService {
             throw new JwtException("Invalid refresh token");
         }
         var userDetails = userDetailsService.loadUserByUsername(subject);
-        refreshTokenService.removeRefreshToken(oldRefreshToken);
+        refreshTokenService.markAsRevoked(oldRefreshToken);
         var tokens = generateTokens(userDetails);
         return new RefreshResponse(tokens[0], tokens[1]);
     }
@@ -87,7 +92,7 @@ public class AuthService {
     }
 
     public void logout(final @NonNull String refreshToken) {
-        refreshTokenService.removeRefreshToken(refreshToken);
+        refreshTokenService.markAsRevoked(refreshToken);
     }
 
     /**
