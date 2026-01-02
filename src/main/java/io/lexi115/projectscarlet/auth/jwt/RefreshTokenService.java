@@ -45,6 +45,11 @@ public class RefreshTokenService {
     }
 
     @Transactional
+    public void removeAllRefreshTokensBefore(final LocalDateTime dateLimit) {
+        refreshTokenRepository.deleteAllByExpirationDateLessThanEqual(dateLimit);
+    }
+
+    @Transactional
     public void markAsRevoked(final String tokenString) {
         var token = refreshTokenRepository.findByTokenHash(tokenString).orElse(null);
         if (token == null) {

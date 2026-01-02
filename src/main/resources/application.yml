@@ -15,17 +15,20 @@ spring:
 
 jwt:
   secret: ${JWT_SECRET}
-  access-token-duration: 10 # 10m
-  refresh-token-duration: 20 # 7d
+  access-token-duration: 600 # 10m
+  refresh-token-duration: 604800 # 7d
 
 scarlet:
   default-word: world
-  refresh-token-cookie-duration: 604800
+  refresh-token-cookie-duration: 604800 # 7d
 
 scheduler:
   jobs:
     daily-word:
       cron: '0 0 0 * * *'
+    remove-old-refresh-tokens:
+      cron: '0/30 * * * * *'
+      refresh-token-lifecycle: 604800 # 7d
 springdoc:
   api-docs:
     path: /api-docs
