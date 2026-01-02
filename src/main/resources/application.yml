@@ -15,8 +15,8 @@ spring:
 
 jwt:
   secret: ${JWT_SECRET}
-  access-token-duration: 600 # 10m
-  refresh-token-duration: 604800 # 7d
+  access-token-duration: 10 # 10m
+  refresh-token-duration: 20 # 7d
 
 scarlet:
   default-word: world
