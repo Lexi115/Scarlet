@@ -58,6 +58,7 @@ public class GlobalErrorHandler {
     /**
      * Method that handles exceptions when a required cookie is not found in the request.
      *
+     * @param e The exception.
      * @return The error response.
      * @since 1.0
      */

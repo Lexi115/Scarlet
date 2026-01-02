@@ -41,6 +41,19 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     /**
+     * Gets a user by the ID.
+     *
+     * @param id The user ID. Cannot be <code>null</code>.
+     * @return A summary of the retrieved user.
+     * @throws UserNotFoundException If the user is not found.
+     * @since 1.0
+     */
+    public UserSummary getUserById(@NonNull final UUID id) {
+        var user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id.toString()));
+        return userMapper.toSummary(user);
+    }
+
+    /**
      * Gets a user by the username.
      *
      * @param username The username. Cannot be <code>null</code>.

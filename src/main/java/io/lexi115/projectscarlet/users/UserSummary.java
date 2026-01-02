@@ -1,6 +1,9 @@
 package io.lexi115.projectscarlet.users;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+
+import java.util.UUID;
 
 /**
  * DTO for a user. Shows basic info like the username and the amount of game wins.
@@ -10,6 +13,12 @@ import lombok.Data;
  */
 @Data
 public class UserSummary {
+    /**
+     * The user ID.
+     */
+    @JsonIgnore
+    private UUID id;
+
     /**
      * The username.
      */
