@@ -1,5 +1,6 @@
 package io.lexi115.projectscarlet.auth.jwt;
 
+import io.lexi115.projectscarlet.users.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,7 +18,11 @@ public class RefreshToken {
     @Column(name = "token_id")
     private Long tokenId;
 
-    @Column(name = "user_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    private User user;
+
+    @Column(name = "user_id")
     private UUID userId;
 
     @Column(name = "token_hash", nullable = false)
