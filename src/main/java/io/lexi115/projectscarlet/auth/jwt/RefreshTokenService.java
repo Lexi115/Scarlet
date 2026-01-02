@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.UUID;
@@ -32,8 +33,8 @@ public class RefreshTokenService {
         var refreshToken = new RefreshToken();
         refreshToken.setTokenHash(tokenString);
         refreshToken.setUserId(user.getId());
-        var expirationDate = LocalDateTime.ofEpochSecond(
-                jwtConfig.getRefreshTokenDuration(), 0, ZoneOffset.UTC);
+        var expirationTimestamp = Instant.now().plusSeconds(jwtConfig.getRefreshTokenDuration()).getEpochSecond();
+        var expirationDate = LocalDateTime.ofEpochSecond(expirationTimestamp, 0, ZoneOffset.UTC);
         refreshToken.setExpirationDate(expirationDate);
         refreshTokenRepository.save(refreshToken);
     }
