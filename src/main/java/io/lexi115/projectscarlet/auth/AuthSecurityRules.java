@@ -33,6 +33,9 @@ public class AuthSecurityRules implements SecurityRules {
                 // Login
                 .requestMatchers(HttpMethod.POST, BASE_PATH + "/login").permitAll()
 
+                // Logout
+                .requestMatchers(HttpMethod.POST, BASE_PATH + "/logout").permitAll()
+
                 // Refresh access token
                 .requestMatchers(HttpMethod.POST, BASE_PATH + "/refresh").permitAll();
     }

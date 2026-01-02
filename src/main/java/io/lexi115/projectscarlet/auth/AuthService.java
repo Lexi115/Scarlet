@@ -41,11 +41,12 @@ public class AuthService {
      */
     private final JwtService jwtService;
 
+    private final RefreshTokenService refreshTokenService;
+
     /**
      * The user details service.
      */
     private final UserDetailsService userDetailsService;
-    private final RefreshTokenService refreshTokenService;
 
     /**
      * Requests a user login.
@@ -58,7 +59,8 @@ public class AuthService {
         var credentials = new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword());
         var authentication = authenticationManager.authenticate(credentials);
         var userDetails = (UserDetails) Objects.requireNonNull(authentication.getPrincipal());
-        return new LoginResponse(createAccessToken(userDetails), createRefreshToken(userDetails));
+        var tokens = generateTokens(userDetails);
+        return new LoginResponse(tokens[0], tokens[1]);
     }
 
     @Transactional
@@ -72,23 +74,20 @@ public class AuthService {
             throw new JwtException("Invalid refresh token");
         }
         var userDetails = userDetailsService.loadUserByUsername(subject);
-        var newAccessToken = createAccessToken(userDetails);
-        var newRefreshToken = createRefreshToken(userDetails);
         refreshTokenService.removeRefreshToken(oldRefreshToken);
-        return new RefreshResponse(newAccessToken, newRefreshToken);
+        var tokens = generateTokens(userDetails);
+        return new RefreshResponse(tokens[0], tokens[1]);
     }
 
-    private String createAccessToken(final UserDetails userDetails) {
-        var accessJwt = jwtService.createAccessJwt(userDetails);
-        return jwtService.encodeJwt(accessJwt);
+    private String[] generateTokens(@NonNull final UserDetails userDetails) {
+        var accessToken = jwtService.createAccessToken(userDetails);
+        var refreshToken = jwtService.createRefreshToken(userDetails);
+        refreshTokenService.addRefreshToken(refreshToken, userDetails.getUsername());
+        return new String[]{accessToken, refreshToken};
     }
 
-    private String createRefreshToken(final UserDetails userDetails) {
-        var refreshJwt = jwtService.createRefreshJwt(userDetails);
-        var encodedToken = jwtService.encodeJwt(refreshJwt);
-        var storedToken = refreshTokenService.addRefreshToken(
-                encodedToken, refreshJwt.getSubject(), refreshJwt.getExpiration());
-        return storedToken.getTokenHash();
+    public void logout(final @NonNull String refreshToken) {
+        refreshTokenService.removeRefreshToken(refreshToken);
     }
 
     /**

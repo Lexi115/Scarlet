@@ -48,19 +48,6 @@ public class UserController {
     }
 
     /**
-     * Method that handles exceptions when a user is not found.
-     *
-     * @param e The exception.
-     * @return The error response.
-     * @since 1.0
-     */
-    @ExceptionHandler(UserNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse onUserNotFound(@NonNull final UserNotFoundException e) {
-        return new ErrorResponse(e.getMessage());
-    }
-
-    /**
      * Method that handles exceptions when a user already exists.
      *
      * @param e The exception.

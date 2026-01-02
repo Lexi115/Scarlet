@@ -3,6 +3,7 @@ package io.lexi115.projectscarlet.auth.jwt;
 import io.lexi115.projectscarlet.users.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -10,7 +11,7 @@ import java.time.ZoneOffset;
 @Service
 @AllArgsConstructor
 public class RefreshTokenService {
-    private final RefreshTokenMapper refreshTokenMapper;
+    private final JwtConfig jwtConfig;
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserService userService;
 
@@ -18,18 +19,19 @@ public class RefreshTokenService {
         return refreshTokenRepository.existsByTokenHash(tokenString);
     }
 
-    public RefreshTokenSummary addRefreshToken(
-            final String tokenString,
-            final String username,
-            final long expiration
-    ) {
+    @Transactional
+    public void addRefreshToken(final String tokenString, final String username) {
+        if (refreshTokenExists(tokenString)) {
+            return;
+        }
         var user = userService.getUserByUsername(username);
         var refreshToken = new RefreshToken();
         refreshToken.setTokenHash(tokenString);
         refreshToken.setUserId(user.getId());
-        refreshToken.setExpirationDate(LocalDateTime.ofEpochSecond(expiration, 0, ZoneOffset.UTC));
-        refreshToken = refreshTokenRepository.save(refreshToken);
-        return refreshTokenMapper.toSummary(refreshToken);
+        var expirationDate = LocalDateTime.ofEpochSecond(
+                jwtConfig.getRefreshTokenDuration(), 0, ZoneOffset.UTC);
+        refreshToken.setExpirationDate(expirationDate);
+        refreshTokenRepository.save(refreshToken);
     }
 
     public void removeRefreshToken(final String tokenString) {
