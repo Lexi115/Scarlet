@@ -1,6 +1,5 @@
 package io.lexi115.projectscarlet.users;
 
-import io.lexi115.projectscarlet.auth.jwt.RefreshToken;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -62,9 +61,6 @@ public class User {
      */
     @Column(name = "last_guess_id")
     private UUID lastGuessId;
-
-    @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<RefreshToken> refreshTokens = new HashSet<>();
 
     /**
      * Adds a role to this user. This has no effect if user already has that role.

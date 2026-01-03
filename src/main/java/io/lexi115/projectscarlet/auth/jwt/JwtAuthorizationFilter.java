@@ -90,7 +90,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private @Nullable String getTokenFromRequest(final @NonNull HttpServletRequest request) {
+    private @Nullable String getTokenFromRequest(@NonNull final HttpServletRequest request) {
         var authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return null;
@@ -98,7 +98,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         return authHeader;
     }
 
-    private @Nullable Jwt parseJwtFromToken(final @NonNull String token) {
+    private @Nullable Jwt parseJwtFromToken(@NonNull final String token) {
         try {
             // Remove the "Bearer " prefix
             return jwtService.decodeJwt(token.trim().substring(7));
@@ -107,7 +107,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         }
     }
 
-    private @Nullable UserDetails getUserDetailsFromJwt(final @NonNull Jwt jwt) {
+    private @Nullable UserDetails getUserDetailsFromJwt(@NonNull final Jwt jwt) {
         var jwtSubject = jwt.getSubject();
         if (jwtSubject == null) {
             return null;

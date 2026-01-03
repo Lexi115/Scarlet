@@ -28,12 +28,26 @@ public class JwtService {
      */
     private final JwtConfig jwtConfig;
 
-    public String createAccessToken(final @NonNull UserDetails userDetails) {
+    /**
+     * Creates a new access token on the provided {@link UserDetails}.
+     *
+     * @param userDetails The user details.
+     * @return The newly created access token.
+     * @since 1.0
+     */
+    public String createAccessToken(@NonNull final UserDetails userDetails) {
         var jwt = createJwt(userDetails, jwtConfig.getAccessTokenDuration());
         return encodeJwt(jwt);
     }
 
-    public String createRefreshToken(final @NonNull UserDetails userDetails) {
+    /**
+     * Creates a new refresh token on the provided {@link UserDetails}.
+     *
+     * @param userDetails The user details.
+     * @return The newly created refresh token.
+     * @since 1.0
+     */
+    public String createRefreshToken(@NonNull final UserDetails userDetails) {
         var jwt = createJwt(userDetails, jwtConfig.getRefreshTokenDuration());
         return encodeJwt(jwt);
     }
@@ -46,7 +60,7 @@ public class JwtService {
      * @return The newly created JWT.
      * @since 1.0
      */
-    public Jwt createJwt(final @NonNull UserDetails userDetails, final long duration) {
+    public Jwt createJwt(@NonNull final UserDetails userDetails, final long duration) {
         return createJwt(userDetails, duration, new HashMap<>());
     }
 
@@ -60,9 +74,9 @@ public class JwtService {
      * @since 1.0
      */
     public Jwt createJwt(
-            final @NonNull UserDetails userDetails,
+            @NonNull final UserDetails userDetails,
             final long duration,
-            final @NonNull Map<String, Object> extraClaims) {
+            @NonNull final Map<String, Object> extraClaims) {
         var nowSeconds = Instant.now().getEpochSecond();
         var claims = new HashMap<String, Object>();
         claims.put(Claims.SUBJECT, userDetails.getUsername());
@@ -79,7 +93,7 @@ public class JwtService {
      * @return The corresponding token string.
      * @since 1.0
      */
-    public String encodeJwt(final @NonNull Jwt jwt) {
+    public String encodeJwt(@NonNull final Jwt jwt) {
         return Jwts.builder()
                 .claims(jwt.getClaims())
                 .signWith(generateSecretKey())
@@ -93,7 +107,7 @@ public class JwtService {
      * @return The corresponding object.
      * @since 1.0
      */
-    public Jwt decodeJwt(final @NonNull String token) {
+    public Jwt decodeJwt(@NonNull final String token) {
         return new Jwt(getSignedClaims(token));
     }
 
@@ -105,7 +119,7 @@ public class JwtService {
      * @return <code>true</code> if the JWT is valid, <code>false</code> otherwise.
      * @since 1.0
      */
-    public boolean validateJwt(final @NonNull Jwt jwt, final @NonNull UserDetails userDetails) {
+    public boolean validateJwt(@NonNull final Jwt jwt, @NonNull final UserDetails userDetails) {
         return jwt.getSubject().equals(userDetails.getUsername()) && !jwt.isExpired();
     }
 
@@ -113,7 +127,7 @@ public class JwtService {
         return Keys.hmacShaKeyFor(jwtConfig.getSecret().getBytes());
     }
 
-    private @NonNull Map<String, Object> getSignedClaims(final @NonNull String token) throws JwtException {
+    private @NonNull Map<String, Object> getSignedClaims(@NonNull final String token) throws JwtException {
         var claims = Jwts.parser()
                 .verifyWith(generateSecretKey())
                 .build()

@@ -94,7 +94,7 @@ public class Jwt {
      * @return The claim.
      * @since 1.0
      */
-    public <T> T getClaim(final String key, final @NonNull Class<T> type) {
+    public <T> T getClaim(final String key, @NonNull final Class<T> type) {
         return type.cast(claims.getOrDefault(key, null));
     }
 
