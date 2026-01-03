@@ -6,6 +6,10 @@ import io.lexi115.projectscarlet.errors.ErrorResponse;
 import io.lexi115.projectscarlet.users.UserDetailsSummary;
 import io.lexi115.projectscarlet.users.UserNotFoundException;
 import io.lexi115.projectscarlet.web.CookieService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -27,6 +31,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/auth")
 @AllArgsConstructor
+@Tag(name = "Auth", description = "Operations related to user authentication.")
 public class AuthController {
 
     /**
@@ -51,6 +56,11 @@ public class AuthController {
      * @since 1.0
      */
     @GetMapping("/me")
+    @Operation(summary = "Get authenticated user", description = "Get info about the currently authenticated user.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User is logged in"),
+            @ApiResponse(responseCode = "404", description = "No authenticated user found")
+    })
     public UserDetailsSummary getAuthenticatedUser() {
         return Optional.ofNullable(authService.getAuthenticatedUser()).orElseThrow(
                 () -> new UserNotFoundException("Authenticated user not found!")
@@ -66,6 +76,15 @@ public class AuthController {
      * @since 1.0
      */
     @PostMapping("/login")
+    @Operation(
+            summary = "User Login",
+            description = "Authenticates a user with credentials and issues access / refresh tokens."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Login successful"),
+            @ApiResponse(responseCode = "401", description = "Incorrect credentials"),
+            @ApiResponse(responseCode = "400", description = "Invalid request body")
+    })
     public LoginResponse login(
             @Valid @RequestBody final LoginRequest request,
             final HttpServletResponse response
@@ -85,6 +104,14 @@ public class AuthController {
      * @since 1.0
      */
     @PostMapping("/logout")
+    @Operation(
+            summary = "User Logout",
+            description = "Invalidates the user's refresh token and clears the auth cookie."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Logout successful"),
+            @ApiResponse(responseCode = "401", description = "Invalid or missing refresh token")
+    })
     public void logout(
             @CookieValue(name = "refreshToken") @NonNull final String refreshToken,
             final HttpServletResponse response
@@ -103,6 +130,14 @@ public class AuthController {
      * @since 1.0
      */
     @PostMapping("/refresh")
+    @Operation(
+            summary = "Refresh Tokens",
+            description = "Uses a valid refresh token cookie to generate new access and refresh tokens."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Tokens refreshed successfully"),
+            @ApiResponse(responseCode = "401", description = "Invalid or expired refresh token")
+    })
     public RefreshResponse refreshTokens(
             @CookieValue(name = "refreshToken") @NonNull final String oldRefreshToken,
             final HttpServletResponse response

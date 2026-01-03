@@ -1,6 +1,10 @@
 package io.lexi115.projectscarlet.users;
 
 import io.lexi115.projectscarlet.errors.ErrorResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -17,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/users")
 @AllArgsConstructor
+@Tag(name = "Users", description = "Operations related to users and accounts.")
 public class UserController {
 
     /**
@@ -25,13 +30,18 @@ public class UserController {
     private UserService userService;
 
     /**
-     * Gets a user by the username.
+     * Returns a user by providing the username.
      *
      * @param username The username. Cannot be blank.
      * @return A summary of the retrieved user.
      * @since 1.0
      */
     @GetMapping("/{username}")
+    @Operation(summary = "Get user by username", description = "Returns a user by providing the username.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User found"),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
     public UserSummary getUserByUsername(@PathVariable @NotBlank final String username) {
         return userService.getUserByUsername(username);
     }
@@ -44,6 +54,12 @@ public class UserController {
      * @since 1.0
      */
     @PostMapping
+    @Operation(summary = "Create a user", description = "Creates a user account by providing a username and password.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User created"),
+            @ApiResponse(responseCode = "400", description = "Invalid credentials"),
+            @ApiResponse(responseCode = "409", description = "Username already in use")
+    })
     public UserSummary createUser(@Valid @RequestBody final CreateUserRequest request) {
         return userService.createUser(request);
     }

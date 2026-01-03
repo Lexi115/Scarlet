@@ -79,9 +79,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(registry -> {
                     securityRulesCollection.forEach(rules -> rules.configure(registry));
-                    registry
-                            .requestMatchers("/error").permitAll()
-                            .anyRequest().authenticated();
+                    registry.anyRequest().authenticated();
                 })
                 .exceptionHandling(configurer -> {
                     configurer.authenticationEntryPoint(
