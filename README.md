@@ -6,8 +6,8 @@
     <img src="https://custom-icon-badges.demolab.com/badge/License-MIT-blue?style=for-the-badge&labelColor=1f4d68" alt="License MIT">
 </div>
 
-Scarlet is a REST web application replica of the popular online guessing
-game [Wordle](https://www.nytimes.com/games/wordle): a word is randomly chosen by the
+**Scarlet is a REST web application replica of the popular online guessing
+game [Wordle](https://www.nytimes.com/games/wordle)**: a word is randomly chosen by the
 system at set intervals and players have to guess it, receiving hints along the way.
 
 ## Features
