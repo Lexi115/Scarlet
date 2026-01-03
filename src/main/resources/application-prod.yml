@@ -1,3 +1,39 @@
+###############################
+# Application Properties File #
+#          PRODUCTION         #
+###############################
+
+# Spring Boot
 spring:
   datasource:
     url: ${SPRING_DATASOURCE_URL}
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+
+# App specific configuration
+scarlet:
+  refresh-token-cookie-duration: 604800 # 7d
+
+# JSON Web Token authorization
+jwt:
+  secret: ${JWT_SECRET}
+  access-token-duration: 600 # 10m
+  refresh-token-duration: 604800 # 7d
+
+# Job scheduling
+scheduler:
+  jobs:
+    auto-random-word:
+      cron: '0 0 0 * * *'
+    remove-old-refresh-tokens:
+      cron: '0 0 0 * * *'
+      refresh-token-lifecycle: 604800 # 7d
+
+# Logging
+logging:
+  file:
+    name: /var/logs/scarlet-prod.log
+  level:
+    root: warn

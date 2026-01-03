@@ -17,7 +17,7 @@ public class SolutionResponse {
     /**
      * The solution word.
      */
-    @JsonProperty("solution")
+    @JsonProperty("word")
     private String solution;
 
 }
