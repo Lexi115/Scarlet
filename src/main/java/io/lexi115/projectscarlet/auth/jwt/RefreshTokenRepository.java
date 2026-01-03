@@ -16,6 +16,7 @@ import java.util.UUID;
  */
 @Repository
 public interface RefreshTokenRepository extends JpaRepository<@NonNull RefreshToken, @NonNull Long> {
+
     /**
      * Finds a refresh token by its hash.
      *
@@ -40,4 +41,5 @@ public interface RefreshTokenRepository extends JpaRepository<@NonNull RefreshTo
      * @since 1.0
      */
     void deleteAllByExpirationDateLessThanEqual(LocalDateTime dateLimit);
+
 }

@@ -1,7 +1,6 @@
-package io.lexi115.projectscarlet.core;
+package io.lexi115.projectscarlet.jobs;
 
 import io.lexi115.projectscarlet.auth.jwt.RefreshTokenService;
-import io.lexi115.projectscarlet.words.WordService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,23 +13,19 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
 /**
- * Configuration class for scheduling asynchronous jobs.
+ * Job that removes old refresh tokens from the database to clear up space.
  *
  * @author Lexi115
  * @since 1.0
  */
 @Configuration
 @EnableScheduling
-public class SchedulerConfig {
+public class RemoveOldRefreshTokensJob {
+
     /**
      * The logger.
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(SchedulerConfig.class);
-
-    /**
-     * The word service.
-     */
-    private final WordService wordService;
+    private static final Logger LOGGER = LoggerFactory.getLogger(RemoveOldRefreshTokensJob.class);
 
     /**
      * The refresh token service.
@@ -46,28 +41,15 @@ public class SchedulerConfig {
     /**
      * Constructor.
      *
-     * @param wordService         The word service.
      * @param refreshTokenService The refresh token service.
      * @since 1.0
      */
-    public SchedulerConfig(final WordService wordService, final RefreshTokenService refreshTokenService) {
-        this.wordService = wordService;
+    public RemoveOldRefreshTokensJob(final RefreshTokenService refreshTokenService) {
         this.refreshTokenService = refreshTokenService;
     }
 
     /**
-     * Job that chooses a random word periodically.
-     *
-     * @since 1.0
-     */
-    @Scheduled(cron = "${scheduler.jobs.daily-word.cron}")
-    public void chooseDailyWord() {
-        var word = wordService.chooseRandomWord();
-        LOGGER.info("Chosen daily word: {}", word);
-    }
-
-    /**
-     * Job that removes old refresh tokens from the database to clear up space.
+     * Job execution logic.
      *
      * @since 1.0
      */
@@ -78,4 +60,5 @@ public class SchedulerConfig {
         refreshTokenService.removeAllRefreshTokensBefore(dateLimit);
         LOGGER.info("Removed old refresh tokens!");
     }
+
 }

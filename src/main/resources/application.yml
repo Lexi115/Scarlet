@@ -24,8 +24,8 @@ scarlet:
 
 scheduler:
   jobs:
-    daily-word:
-      cron: '0 0 0 * * *'
+    auto-random-word:
+      cron: '0/30 * * * * *'
     remove-old-refresh-tokens:
       cron: '0/30 * * * * *'
       refresh-token-lifecycle: 604800 # 7d

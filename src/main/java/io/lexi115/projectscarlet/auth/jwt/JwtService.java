@@ -23,6 +23,7 @@ import java.util.Map;
 @Service
 @AllArgsConstructor
 public class JwtService {
+
     /**
      * The JWT configuration.
      */
@@ -135,4 +136,5 @@ public class JwtService {
                 .getPayload();
         return new HashMap<>(claims);
     }
+
 }

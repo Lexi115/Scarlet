@@ -19,6 +19,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class RefreshToken {
+
     /**
      * The token ID.
      */
@@ -57,4 +58,5 @@ public class RefreshToken {
      */
     @Column(name = "is_revoked", nullable = false)
     private boolean isRevoked = false;
+
 }

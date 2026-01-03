@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
+
     /**
      * The user repository.
      */
@@ -37,4 +38,5 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException(username));
         return new UserDetailsImpl(user);
     }
+
 }

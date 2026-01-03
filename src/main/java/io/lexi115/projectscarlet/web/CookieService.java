@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 @Service
 public class CookieService {
+
     /**
      * Creates a secure HTTPS-only cookie with the specified configurations.
      *
@@ -37,4 +38,5 @@ public class CookieService {
         cookie.setMaxAge(maxAge);
         return cookie;
     }
+
 }

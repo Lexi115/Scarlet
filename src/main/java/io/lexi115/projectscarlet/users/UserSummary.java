@@ -13,6 +13,7 @@ import java.util.UUID;
  */
 @Data
 public class UserSummary {
+
     /**
      * The user ID.
      */
@@ -28,4 +29,5 @@ public class UserSummary {
      * The amount of game wins.
      */
     private Integer wins;
+
 }

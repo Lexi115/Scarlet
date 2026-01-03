@@ -13,6 +13,7 @@ import lombok.Getter;
 @Table(name = "words")
 @Getter
 public class Word {
+
     /**
      * The word ID.
      */
@@ -25,4 +26,5 @@ public class Word {
      */
     @Column(name = "value", nullable = false)
     private String value;
+
 }

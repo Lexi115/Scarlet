@@ -12,8 +12,10 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class UserRoleSummary {
+
     /**
      * The role name.
      */
     private String role;
+
 }

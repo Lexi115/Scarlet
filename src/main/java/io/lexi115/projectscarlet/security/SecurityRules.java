@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configurers.AuthorizeH
  * @since 1.0
  */
 public interface SecurityRules {
+
     /**
      * Configures security rules.
      *
@@ -19,4 +20,5 @@ public interface SecurityRules {
     void configure(
             AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry
     );
+
 }

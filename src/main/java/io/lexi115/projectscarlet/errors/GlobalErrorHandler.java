@@ -19,6 +19,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
  */
 @RestControllerAdvice
 public class GlobalErrorHandler {
+
     /**
      * Method that handles exceptions when illegal arguments are provided.
      *
@@ -81,4 +82,5 @@ public class GlobalErrorHandler {
     public ErrorResponse onUserNotFound(@NonNull final UserNotFoundException e) {
         return new ErrorResponse(e.getMessage());
     }
+
 }

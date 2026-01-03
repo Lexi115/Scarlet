@@ -20,6 +20,7 @@ import java.util.UUID;
 @Service
 @AllArgsConstructor
 public class RefreshTokenService {
+
     /**
      * The JWT configuration.
      */
@@ -111,4 +112,5 @@ public class RefreshTokenService {
         token.setRevoked(true);
         refreshTokenRepository.save(token);
     }
+
 }

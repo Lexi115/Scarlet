@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class WordSecurityRules implements SecurityRules {
+
     /**
      * The base path for the endpoints.
      */
@@ -40,4 +41,5 @@ public class WordSecurityRules implements SecurityRules {
                 // Get solution
                 .requestMatchers(HttpMethod.GET, BASE_PATH + "/solution").permitAll();
     }
+
 }

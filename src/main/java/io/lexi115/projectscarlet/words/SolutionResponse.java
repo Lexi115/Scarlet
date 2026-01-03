@@ -13,9 +13,11 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class SolutionResponse {
+
     /**
      * The solution word.
      */
     @JsonProperty("solution")
     private String solution;
+
 }

@@ -13,6 +13,7 @@ import java.util.UUID;
  */
 @Data
 public class RefreshTokenSummary {
+
     /**
      * The token string.
      */
@@ -32,4 +33,5 @@ public class RefreshTokenSummary {
      * Whether the token has been revoked.
      */
     private boolean revoked;
+
 }

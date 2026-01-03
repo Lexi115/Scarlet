@@ -20,6 +20,7 @@ import java.util.UUID;
 @Service
 @AllArgsConstructor
 public class UserService {
+
     /**
      * The user mapper.
      */
@@ -95,4 +96,5 @@ public class UserService {
         user.setLastGuessId(UUID.fromString(guessId));
         userRepository.save(user);
     }
+
 }

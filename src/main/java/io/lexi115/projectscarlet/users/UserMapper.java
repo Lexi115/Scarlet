@@ -14,6 +14,7 @@ import java.util.HashSet;
  */
 @Component
 public class UserMapper {
+
     /**
      * Converts a {@link CreateUserRequest} into a {@link User} entity. Note that the password in this phase is still
      * in plain text.
@@ -65,4 +66,5 @@ public class UserMapper {
         summary.setRoles(roles);
         return summary;
     }
+
 }

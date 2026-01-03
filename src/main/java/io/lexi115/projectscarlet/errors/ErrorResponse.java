@@ -12,8 +12,10 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ErrorResponse {
+
     /**
      * The error message.
      */
     private String message;
+
 }

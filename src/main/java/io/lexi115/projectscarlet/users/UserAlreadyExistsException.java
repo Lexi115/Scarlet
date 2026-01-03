@@ -7,6 +7,7 @@ package io.lexi115.projectscarlet.users;
  * @since 1.0
  */
 public class UserAlreadyExistsException extends RuntimeException {
+
     /**
      * Constructor.
      *
@@ -16,4 +17,5 @@ public class UserAlreadyExistsException extends RuntimeException {
     public UserAlreadyExistsException(final String message) {
         super("User already exists: " + message);
     }
+
 }

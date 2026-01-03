@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "jwt")
 @Data
 public class JwtConfig {
+
     /**
      * The secret string used by the server to sign JWTs (giving them authenticity).
      */
@@ -28,4 +29,5 @@ public class JwtConfig {
      * The refresh token duration (expressed in seconds).
      */
     private Integer refreshTokenDuration;
+
 }

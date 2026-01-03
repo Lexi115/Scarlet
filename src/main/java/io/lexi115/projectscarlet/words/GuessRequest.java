@@ -11,9 +11,11 @@ import lombok.Data;
  */
 @Data
 public class GuessRequest {
+
     /**
      * The guess. Cannot be blank.
      */
     @NotBlank
     private String guess;
+
 }

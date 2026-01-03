@@ -11,6 +11,7 @@ import lombok.Data;
  */
 @Data
 public class LoginRequest {
+
     /**
      * The username. Cannot be blank.
      */
@@ -22,4 +23,5 @@ public class LoginRequest {
      */
     @NotBlank
     private String password;
+
 }

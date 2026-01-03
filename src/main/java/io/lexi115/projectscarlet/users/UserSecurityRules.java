@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class UserSecurityRules implements SecurityRules {
+
     /**
      * The base path for the endpoints.
      */
@@ -36,4 +37,5 @@ public class UserSecurityRules implements SecurityRules {
                 // Create user
                 .requestMatchers(HttpMethod.POST, BASE_PATH).permitAll();
     }
+
 }

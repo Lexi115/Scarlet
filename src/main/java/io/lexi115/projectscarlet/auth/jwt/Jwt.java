@@ -19,6 +19,7 @@ import java.util.Map;
 @Getter
 @Setter
 public class Jwt {
+
     /**
      * The fields inside the JWT payload.
      */
@@ -118,4 +119,5 @@ public class Jwt {
     public boolean isExpired() {
         return Instant.ofEpochSecond(getExpiration()).isBefore(Instant.now());
     }
+
 }
