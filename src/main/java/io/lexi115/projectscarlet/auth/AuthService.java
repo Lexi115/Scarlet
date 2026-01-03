@@ -41,6 +41,9 @@ public class AuthService {
      */
     private final JwtService jwtService;
 
+    /**
+     * The refresh token service.
+     */
     private final RefreshTokenService refreshTokenService;
 
     /**
@@ -55,7 +58,7 @@ public class AuthService {
      * @return The login response, containing the access and refresh tokens.
      * @since 1.0
      */
-    public LoginResponse login(final @NonNull LoginRequest request) {
+    public LoginResponse login(@NonNull final LoginRequest request) {
         var credentials = new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword());
         var authentication = authenticationManager.authenticate(credentials);
         var userDetails = (UserDetails) Objects.requireNonNull(authentication.getPrincipal());
@@ -63,8 +66,17 @@ public class AuthService {
         return new LoginResponse(tokens[0], tokens[1]);
     }
 
+    /**
+     * Refreshes the currently held access and refresh tokens. If a replay attack is detected (attacker tries using a
+     * revoked refresh token), every refresh token associated with the victim user is deleted, forcing the victim to
+     * login again for security reasons.
+     *
+     * @param oldRefreshToken The refresh token string.
+     * @return The refresh response, containing the new tokens.
+     * @since 1.0
+     */
     @Transactional
-    public RefreshResponse refreshAccessToken(final @NonNull String oldRefreshToken) {
+    public RefreshResponse refreshTokens(@NonNull final String oldRefreshToken) {
         var oldToken = refreshTokenService.getRefreshTokenByString(oldRefreshToken);
         if (oldToken == null) {
             throw new JwtException("Refresh token not found in DB!");
@@ -91,7 +103,13 @@ public class AuthService {
         return new String[]{accessToken, refreshToken};
     }
 
-    public void logout(final @NonNull String refreshToken) {
+    /**
+     * Requests a user logout.
+     *
+     * @param refreshToken The refresh token string.
+     * @since 1.0
+     */
+    public void logout(@NonNull final String refreshToken) {
         refreshTokenService.markAsRevoked(refreshToken);
     }
 

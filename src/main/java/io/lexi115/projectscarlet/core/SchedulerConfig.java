@@ -43,6 +43,13 @@ public class SchedulerConfig {
     @Value("${scheduler.jobs.remove-old-refresh-tokens.refresh-token-lifecycle}")
     private Long refreshTokenLifecycle;
 
+    /**
+     * Constructor.
+     *
+     * @param wordService         The word service.
+     * @param refreshTokenService The refresh token service.
+     * @since 1.0
+     */
     public SchedulerConfig(final WordService wordService, final RefreshTokenService refreshTokenService) {
         this.wordService = wordService;
         this.refreshTokenService = refreshTokenService;

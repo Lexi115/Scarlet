@@ -61,7 +61,7 @@ public class AuthController {
      *
      * @param request  The login request.
      * @param response The HTTP response object.
-     * @return The login response, containing the access token.
+     * @return The login response, containing the access and refresh tokens.
      * @since 1.0
      */
     @PostMapping("/login")
@@ -75,17 +75,31 @@ public class AuthController {
         return loginResponse;
     }
 
+    /**
+     * Requests a user logout.
+     *
+     * @param refreshToken The refresh token string.
+     * @since 1.0
+     */
     @PostMapping("/logout")
     public void logout(@CookieValue(name = "refreshToken") @NonNull final String refreshToken) {
         authService.logout(refreshToken);
     }
 
+    /**
+     * Refreshes the currently held access and refresh tokens.
+     *
+     * @param oldRefreshToken The refresh token string.
+     * @param response        The HTTP response object.
+     * @return The refresh response, containing the new tokens.
+     * @since 1.0
+     */
     @PostMapping("/refresh")
-    public RefreshResponse refreshAccessToken(
-            @CookieValue(name = "refreshToken") @NonNull final String refreshToken,
+    public RefreshResponse refreshTokens(
+            @CookieValue(name = "refreshToken") @NonNull final String oldRefreshToken,
             final HttpServletResponse response
     ) {
-        var refreshResponse = authService.refreshAccessToken(refreshToken);
+        var refreshResponse = authService.refreshTokens(oldRefreshToken);
         var refreshTokenCookie = createRefreshTokenCookie(refreshResponse.getRefreshToken());
         response.addCookie(refreshTokenCookie);
         return refreshResponse;
@@ -140,12 +154,13 @@ public class AuthController {
     /**
      * Method that handles JSON Web Token (JWT) exceptions.
      *
+     * @param e The exception.
      * @return The error response.
      * @since 1.0
      */
     @ExceptionHandler(JwtException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ErrorResponse onJwtException(final JwtException e) {
+    public ErrorResponse onJwtException(@NonNull final JwtException e) {
         return new ErrorResponse("Invalid JWT: " + e.getMessage());
     }
 }
