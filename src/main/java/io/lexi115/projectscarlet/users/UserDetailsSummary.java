@@ -12,6 +12,7 @@ import java.util.Collection;
  */
 @Data
 public class UserDetailsSummary {
+
     /**
      * The username.
      */
@@ -21,4 +22,5 @@ public class UserDetailsSummary {
      * The user's roles.
      */
     private Collection<UserRoleSummary> roles;
+
 }

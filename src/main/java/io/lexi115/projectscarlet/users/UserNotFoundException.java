@@ -7,6 +7,7 @@ package io.lexi115.projectscarlet.users;
  * @since 1.0
  */
 public class UserNotFoundException extends RuntimeException {
+
     /**
      * Constructor.
      *
@@ -16,4 +17,5 @@ public class UserNotFoundException extends RuntimeException {
     public UserNotFoundException(final String message) {
         super("User not found: " + message);
     }
+
 }

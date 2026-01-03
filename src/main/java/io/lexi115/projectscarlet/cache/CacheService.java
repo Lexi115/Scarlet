@@ -9,6 +9,7 @@ import lombok.NonNull;
  * @since 1.0
  */
 public interface CacheService {
+
     /**
      * Returns a value given a key.
      *
@@ -35,4 +36,5 @@ public interface CacheService {
      * @param value The value.
      */
     void set(@NonNull String key, String value);
+
 }

@@ -15,10 +15,11 @@ import java.util.*;
  */
 @Service
 public class WordService {
+
     /**
-     * The key for the daily word key-value pair stored in the cache.
+     * The key for the chosen word key-value pair stored in the cache.
      */
-    private static final String DAILY_WORD_KEY = "dailyWord";
+    private static final String CHOSEN_WORD_KEY = "chosenWord";
 
     /**
      * The cache service.
@@ -63,7 +64,7 @@ public class WordService {
      * @since 1.0
      */
     public GuessResponse guessWord(@NonNull final GuessRequest request) {
-        var word = cacheService.get(DAILY_WORD_KEY, scarletConfig.getDefaultWord()).toUpperCase().trim();
+        var word = cacheService.get(CHOSEN_WORD_KEY, scarletConfig.getDefaultWord()).toUpperCase().trim();
         var guess = request.getGuess().toUpperCase().trim();
         var correctGuess = guess.equals(word);
         var correctPositions = getCorrectPositions(word, guess);
@@ -82,7 +83,7 @@ public class WordService {
         var numOfWords = (int) wordRepository.count();
         var randomId = new Random().nextInt(numOfWords) + 1;
         var wordString = wordRepository.findById(randomId).orElseThrow().getValue();
-        cacheService.set(DAILY_WORD_KEY, wordString);
+        cacheService.set(CHOSEN_WORD_KEY, wordString);
         cacheService.set("guessId", UUID.randomUUID().toString());
         return wordString;
     }
@@ -95,13 +96,13 @@ public class WordService {
      * @since 1.0
      */
     public SolutionResponse getSolution() {
-        return new SolutionResponse(cacheService.get(DAILY_WORD_KEY, scarletConfig.getDefaultWord()));
+        return new SolutionResponse(cacheService.get(CHOSEN_WORD_KEY, scarletConfig.getDefaultWord()));
     }
 
     /**
      * Returns the correct character positions of the guess.
      *
-     * @param word The word to guess.
+     * @param word  The word to guess.
      * @param guess The guess.
      * @return A set containing the correct position indexes.
      * @since 1.0
@@ -123,7 +124,7 @@ public class WordService {
     /**
      * Returns the characters in the guess which are absent in the actual solution.
      *
-     * @param word The word to guess.
+     * @param word  The word to guess.
      * @param guess The guess.
      * @return A set containing the correct position indexes.
      * @since 1.0
@@ -152,7 +153,7 @@ public class WordService {
      * Returns the characters in the guess which are present in the actual solution but misplaced. The value part of
      * the map is the number of misplacement occurrences for that character.
      *
-     * @param word The word to guess.
+     * @param word  The word to guess.
      * @param guess The guess.
      * @return A map containing the misplaced characters.
      * @since 1.0
@@ -191,4 +192,5 @@ public class WordService {
         }
         return map;
     }
+
 }

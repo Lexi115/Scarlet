@@ -13,6 +13,7 @@ import org.hibernate.validator.constraints.Length;
  */
 @Data
 public class CreateUserRequest {
+
     /**
      * The username. Cannot be blank.
      */
@@ -26,4 +27,5 @@ public class CreateUserRequest {
     @NotBlank
     @Pattern(regexp = "[a-zA-Z0-9_!$&@#]{1,255}")
     private String password;
+
 }

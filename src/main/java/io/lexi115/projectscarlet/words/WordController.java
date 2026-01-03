@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 @AllArgsConstructor
 public class WordController {
+
     /**
      * The user service.
      */
@@ -70,4 +71,5 @@ public class WordController {
     public SolutionResponse getSolution() {
         return wordService.getSolution();
     }
+
 }

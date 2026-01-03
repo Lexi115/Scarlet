@@ -17,6 +17,7 @@ import java.util.HashSet;
  */
 @AllArgsConstructor
 public class UserDetailsImpl implements UserDetails {
+
     /**
      * The user entity.
      */
@@ -60,4 +61,5 @@ public class UserDetailsImpl implements UserDetails {
         });
         return authorities;
     }
+
 }

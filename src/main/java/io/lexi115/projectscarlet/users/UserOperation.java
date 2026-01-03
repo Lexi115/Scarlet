@@ -15,6 +15,7 @@ import org.springframework.security.core.GrantedAuthority;
 @Entity
 @Table(name = "operations")
 public class UserOperation implements GrantedAuthority {
+
     /**
      * The operation ID.
      */
@@ -32,4 +33,5 @@ public class UserOperation implements GrantedAuthority {
     public String getAuthority() {
         return id;
     }
+
 }

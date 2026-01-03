@@ -28,6 +28,7 @@ import java.util.Optional;
 @RequestMapping("/auth")
 @AllArgsConstructor
 public class AuthController {
+
     /**
      * The authentication service.
      */
@@ -70,7 +71,8 @@ public class AuthController {
             final HttpServletResponse response
     ) {
         var loginResponse = authService.login(request);
-        var refreshTokenCookie = createRefreshTokenCookie(loginResponse.getRefreshToken());
+        var refreshTokenCookie = createRefreshTokenCookie(
+                loginResponse.getRefreshToken(), scarletConfig.getRefreshTokenCookieDuration());
         response.addCookie(refreshTokenCookie);
         return loginResponse;
     }
@@ -79,11 +81,17 @@ public class AuthController {
      * Requests a user logout.
      *
      * @param refreshToken The refresh token string.
+     * @param response     The HTTP response object.
      * @since 1.0
      */
     @PostMapping("/logout")
-    public void logout(@CookieValue(name = "refreshToken") @NonNull final String refreshToken) {
+    public void logout(
+            @CookieValue(name = "refreshToken") @NonNull final String refreshToken,
+            final HttpServletResponse response
+    ) {
         authService.logout(refreshToken);
+        var refreshTokenCookie = createRefreshTokenCookie(refreshToken, 0);
+        response.addCookie(refreshTokenCookie);
     }
 
     /**
@@ -100,18 +108,14 @@ public class AuthController {
             final HttpServletResponse response
     ) {
         var refreshResponse = authService.refreshTokens(oldRefreshToken);
-        var refreshTokenCookie = createRefreshTokenCookie(refreshResponse.getRefreshToken());
+        var refreshTokenCookie = createRefreshTokenCookie(
+                refreshResponse.getRefreshToken(), scarletConfig.getRefreshTokenCookieDuration());
         response.addCookie(refreshTokenCookie);
         return refreshResponse;
     }
 
-    private Cookie createRefreshTokenCookie(final String refreshToken) {
-        return cookieService.createSecureCookie(
-                "refreshToken",
-                refreshToken,
-                "/auth",
-                scarletConfig.getRefreshTokenCookieDuration()
-        );
+    private Cookie createRefreshTokenCookie(final String refreshToken, final Integer duration) {
+        return cookieService.createSecureCookie("refreshToken", refreshToken, "/auth", duration);
     }
 
     /**
@@ -163,4 +167,5 @@ public class AuthController {
     public ErrorResponse onJwtException(@NonNull final JwtException e) {
         return new ErrorResponse("Invalid JWT: " + e.getMessage());
     }
+
 }

@@ -19,6 +19,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class User {
+
     /**
      * The user ID.
      */
@@ -81,4 +82,5 @@ public class User {
     public void removeRole(final UserRole role) {
         roles.remove(role);
     }
+
 }

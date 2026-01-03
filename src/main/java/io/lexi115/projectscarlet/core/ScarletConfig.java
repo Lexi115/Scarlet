@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "scarlet")
 @Data
 public class ScarletConfig {
+
     /**
      * The default game word when no other word is chosen (present in cache).
      */
@@ -23,5 +24,6 @@ public class ScarletConfig {
      * The duration of the cookie used to store the refresh token.
      */
     private Integer refreshTokenCookieDuration;
+
 }
 

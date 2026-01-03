@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/users")
 @AllArgsConstructor
 public class UserController {
+
     /**
      * The user service.
      */
@@ -59,4 +60,5 @@ public class UserController {
     public ErrorResponse onUserAlreadyExists(@NonNull final UserAlreadyExistsException e) {
         return new ErrorResponse(e.getMessage());
     }
+
 }

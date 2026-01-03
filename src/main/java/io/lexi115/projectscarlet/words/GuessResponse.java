@@ -16,6 +16,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 public class GuessResponse {
+
     /**
      * Whether the guess was correct or not.
      */
@@ -39,4 +40,5 @@ public class GuessResponse {
      */
     @JsonProperty("absent")
     private Set<Character> absentCharacters;
+
 }

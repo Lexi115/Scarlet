@@ -96,4 +96,5 @@ public class UserRole implements GrantedAuthority {
     public int hashCode() {
         return Objects.hashCode(id);
     }
+
 }

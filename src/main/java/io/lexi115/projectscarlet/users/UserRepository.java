@@ -16,6 +16,7 @@ import java.util.UUID;
  */
 @Repository
 public interface UserRepository extends JpaRepository<@NonNull User, @NonNull UUID> {
+
     /**
      * Finds a user by the username. It automatically fetches the user's roles and granted operations.
      *
@@ -25,4 +26,5 @@ public interface UserRepository extends JpaRepository<@NonNull User, @NonNull UU
      */
     @EntityGraph(attributePaths = {"roles", "roles.operations"})
     Optional<@NonNull User> findByUsername(@NonNull String username);
+
 }

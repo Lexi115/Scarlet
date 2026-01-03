@@ -26,6 +26,7 @@ import java.util.Objects;
 @Service
 @AllArgsConstructor
 public class AuthService {
+
     /**
      * The authentication manager (the one that actually does the heavy lifting).
      */
@@ -128,4 +129,5 @@ public class AuthService {
         var userDetails = (UserDetails) Objects.requireNonNull(authentication.getPrincipal());
         return userMapper.toSummary(userDetails);
     }
+
 }

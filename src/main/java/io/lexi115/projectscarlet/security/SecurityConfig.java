@@ -30,6 +30,7 @@ import java.util.Collection;
 @EnableWebSecurity
 @AllArgsConstructor
 public class SecurityConfig {
+
     /**
      * The individual security rules classes.
      */
@@ -91,4 +92,5 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
+
 }

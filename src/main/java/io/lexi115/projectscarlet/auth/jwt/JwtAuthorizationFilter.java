@@ -29,6 +29,7 @@ import java.io.IOException;
 @Component
 @AllArgsConstructor
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
+
     /**
      * The JWT service.
      */
@@ -128,4 +129,5 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         return authentication;
     }
+
 }

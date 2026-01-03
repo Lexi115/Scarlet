@@ -13,6 +13,7 @@ import org.springframework.data.redis.core.RedisTemplate;
  */
 @Configuration
 public class RedisConfig {
+
     /**
      * Returns a {@link RedisTemplate} bean.
      *
@@ -25,4 +26,5 @@ public class RedisConfig {
         template.setConnectionFactory(connectionFactory);
         return template;
     }
+
 }

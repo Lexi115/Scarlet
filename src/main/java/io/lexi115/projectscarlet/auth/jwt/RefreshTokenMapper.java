@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class RefreshTokenMapper {
+
     /**
      * Converts a {@link RefreshToken} into a {@link RefreshTokenSummary} DTO.
      *
@@ -26,4 +27,5 @@ public class RefreshTokenMapper {
         summary.setRevoked(refreshToken.isRevoked());
         return summary;
     }
+
 }

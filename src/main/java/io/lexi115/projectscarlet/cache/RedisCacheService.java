@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class RedisCacheService implements CacheService {
+
     /**
      * The template used to interact with the Redis server instance.
      */
@@ -55,4 +56,5 @@ public class RedisCacheService implements CacheService {
     public void set(@NonNull final String key, final String value) {
         template.opsForValue().set(key, value);
     }
+
 }
