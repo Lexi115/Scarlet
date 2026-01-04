@@ -159,23 +159,33 @@ public class WordService {
      * @since 1.0
      */
     public Map<Character, Integer> getMisplacedCharacters(@NonNull final String word, @NonNull final String guess) {
+        if (word.equals(guess)) {
+            return Map.of();
+        }
         var wordLength = word.length();
         if (wordLength != guess.length()) {
             throw new IllegalArgumentException("Lengths must match!");
         }
-        if (word.equals(guess)) {
-            return Map.of();
+        char w;
+        char g;
+        int count;
+        var availableChars = new HashMap<Character, Integer>();
+        for (int i = 0; i < wordLength; i++) {
+            w = word.charAt(i);
+            g = guess.charAt(i);
+            if (w != g) {
+                availableChars.put(w, availableChars.getOrDefault(w, 0) + 1);
+            }
         }
         var displacements = new HashMap<Character, Integer>();
-        var occurrences = getCharacterOccurrences(word);
         for (int i = 0; i < wordLength; i++) {
-            var wordCharacter = word.charAt(i);
-            var guessCharacter = guess.charAt(i);
-            if (wordCharacter != guessCharacter) {
-                var found = displacements.getOrDefault(guessCharacter, 0);
-                var available = occurrences.getOrDefault(guessCharacter, 0);
-                if (found < available) {
-                    displacements.put(guessCharacter, found + 1);
+            w = word.charAt(i);
+            g = guess.charAt(i);
+            if (w != g) {
+                count = availableChars.getOrDefault(g, 0);
+                if (count > 0) {
+                    displacements.put(g, displacements.getOrDefault(g, 0) + 1);
+                    availableChars.put(g, count - 1);
                 }
             }
         }

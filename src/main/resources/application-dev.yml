@@ -18,22 +18,22 @@ spring:
 
 # App specific configuration
 scarlet:
-  refresh-token-cookie-duration: 120 # 2m
+  refresh-token-cookie-duration: 900000 # 2m
 
 # JSON Web Token authorization
 jwt:
   secret: ${JWT_SECRET}
-  access-token-duration: 60 # 1m
-  refresh-token-duration: 120 # 2m
+  access-token-duration: 90000 # 1m
+  refresh-token-duration: 900000 # 2m
 
 # Job scheduling
 scheduler:
   jobs:
     auto-random-word:
-      cron: '0/30 * * * * *'
+      cron: '0 0 0 * * *'
     remove-old-refresh-tokens:
-      cron: '0/30 * * * * *'
-      refresh-token-lifecycle: 120 # 2m
+      cron: '0 0 0 * * *'
+      refresh-token-lifecycle: 900000 # 2m
 
 # Logging
 logging:

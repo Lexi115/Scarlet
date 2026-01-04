@@ -10,6 +10,11 @@
 game [Wordle](https://www.nytimes.com/games/wordle)**: a word is randomly chosen by the
 system at set intervals and players have to guess it, receiving hints along the way.
 
+<div align="center" style="display: flex; align-items: center; justify-content: center">
+    <img src="/docs/resources/images/example-1.png" width="250" alt="Example 1">
+    <img src="/docs/resources/images/example-2.png" width="230" alt="Example 2">
+</div>
+
 ## Features
 
 - Unlimited tries to guess the word.
@@ -21,7 +26,8 @@ system at set intervals and players have to guess it, receiving hints along the 
 1) Install and run [Docker](https://www.docker.com).
 2) Open your terminal and ```cd``` into the project root directory.
 3) Execute the ```docker compose up``` command.
-4) Enjoy sending HTTP requests to the available endpoints!
+4) Enjoy sending HTTP requests to the available endpoints (or visit the frontend to play using a GUI)!
+    - **Note:** default hostname and port are ```localhost:8080```.
 
 ## Usage
 

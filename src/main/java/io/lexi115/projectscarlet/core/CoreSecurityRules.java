@@ -24,6 +24,10 @@ public class CoreSecurityRules implements SecurityRules {
     public void configure(
             final AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
         registry
+                // Root
+                .requestMatchers("/").permitAll()
+                .requestMatchers("/index.html").permitAll()
+
                 // Error page
                 .requestMatchers("/error").permitAll()
 
