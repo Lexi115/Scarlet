@@ -188,12 +188,12 @@
             renderRow(guess, result);
 
             input.value = '';
-            input.focus();
 
             if (result.correct) {
                 handleWin();
             } else {
                 input.disabled = false;
+                input.focus();
             }
 
         } catch (error) {
