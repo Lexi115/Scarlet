@@ -1,9 +1,9 @@
 # Scarlet • Wordle-like RESTful game 💬
 
 <div align="center">
-    <img src="https://custom-icon-badges.demolab.com/badge/Java-21-red?style=for-the-badge&labelColor=923434&logo=java&logoColor=white" alt="Java 21">
-    <img src="https://custom-icon-badges.demolab.com/github/actions/workflow/status/Lexi115/ProjectScarlet/workflow.yml?style=for-the-badge&labelColor=383838&logo=github&logoColor=white" alt="GitHub Actions Build Status">
-    <img src="https://custom-icon-badges.demolab.com/badge/License-MIT-blue?style=for-the-badge&labelColor=1f4d68" alt="License MIT">
+    <img src="https://shields.io/badge/Java-21-red?style=for-the-badge&labelColor=923434&logo=java&logoColor=white" alt="Java 21">
+    <img src="https://shields.io/github/actions/workflow/status/Lexi115/ProjectScarlet/workflow.yml?style=for-the-badge&labelColor=383838&logo=github&logoColor=white" alt="GitHub Actions Build Status">
+    <img src="https://shields.io/badge/License-MIT-blue?style=for-the-badge&labelColor=1f4d68" alt="License MIT">
 </div>
 
 **Scarlet is a REST web application replica of the popular online guessing
