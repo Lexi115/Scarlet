@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Scarlet</title>
+    <style>
+        :root {
+            --correct: #6aaa64;
+            --present: #c9b458;
+            --absent: #787c7e;
+            --border: #d3d6da;
+            --text: #000000;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #fdfdfd;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+        #game-board {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 20px;
+            max-width: 350px;
+            width: 100%;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
+        }
+
+        .tile {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border: 2px solid var(--border);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            box-sizing: border-box;
+            color: var(--text);
+        }
+
+        .tile.correct {
+            background-color: var(--correct);
+            border-color: var(--correct);
+            color: white;
+        }
+
+        .tile.present {
+            background-color: var(--present);
+            border-color: var(--present);
+            color: white;
+        }
+
+        .tile.absent {
+            background-color: var(--absent);
+            border-color: var(--absent);
+            color: white;
+        }
+
+        #input-area {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            width: 150px;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            background-color: black;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        #message {
+            margin-top: 10px;
+            font-weight: bold;
+            height: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<h1>SCARLET</h1>
+
+<div id="game-board">
+</div>
+
+<div id="message"></div>
+
+<div id="input-area">
+    <input autofocus id="guess-input" maxlength="5" placeholder="Guess..." type="text">
+    <button id="submit-btn" onclick="submitGuess()">Submit</button>
+</div>
+
+<button class="hidden" id="new-game-btn" onclick="startNewGame()">Clear</button>
+
+<script>
+    const API_URL = 'http://localhost:8080';
+    const WORD_LENGTH = 5;
+    let isGameOver = false;
+
+    window.onload = startNewGame;
+
+    async function startNewGame() {
+        isGameOver = false;
+        document.getElementById('game-board').innerHTML = '';
+        document.getElementById('message').innerText = '';
+        document.getElementById('guess-input').value = '';
+        document.getElementById('guess-input').disabled = false;
+        document.getElementById('submit-btn').disabled = false;
+        document.getElementById('new-game-btn').classList.add('hidden');
+        document.getElementById('input-area').classList.remove('hidden');
+    }
+
+    async function submitGuess() {
+        if (isGameOver) return;
+
+        const input = document.getElementById('guess-input');
+        const guess = input.value.toUpperCase();
+
+        if (guess.length !== WORD_LENGTH) {
+            showMessage("Not enough letters");
+            return;
+        }
+
+        input.disabled = true;
+
+        try {
+            const response = await fetch(`${API_URL}/words/guess`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({guess: guess}),
+                credentials: 'include'
+            });
+
+            if (response.status === 400) {
+                showMessage("Invalid word");
+                input.disabled = false;
+                return;
+            }
+
+            if (!response.ok) throw new Error("Error submitting guess");
+
+            const result = await response.json();
+            renderRow(guess, result);
+
+            input.value = '';
+            input.focus();
+
+            if (result.correct) {
+                handleWin();
+            } else {
+                input.disabled = false;
+            }
+
+        } catch (error) {
+            console.error(error);
+            showMessage("Error submitting guess.");
+            input.disabled = false;
+        }
+    }
+
+    function renderRow(guess, result) {
+        const board = document.getElementById('game-board');
+        const row = document.createElement('div');
+        row.className = 'row';
+
+        const tilesDOM = [];
+
+        for (let i = 0; i < guess.length; i++) {
+            const tile = document.createElement('div');
+            tile.className = 'tile absent';
+            tile.innerText = guess[i];
+            tilesDOM.push(tile);
+            row.appendChild(tile);
+        }
+
+        let yellowBudget = {};
+        if (result.misplaced) {
+            for (let key in result.misplaced) {
+                yellowBudget[key.toUpperCase()] = result.misplaced[key];
+            }
+        }
+
+        const correctIndices = result.correctPositions || [];
+        correctIndices.forEach(index => {
+            if (tilesDOM[index]) {
+                tilesDOM[index].className = 'tile correct';
+            }
+        });
+
+        for (let i = 0; i < guess.length; i++) {
+            // Skip if already Green
+            if (correctIndices.includes(i)) continue;
+            const letter = guess[i].toUpperCase();
+            if (yellowBudget[letter] && yellowBudget[letter] > 0) {
+                tilesDOM[i].className = 'tile present'; // Yellow
+                yellowBudget[letter]--; // Deduct 1 from budget
+            }
+        }
+
+        board.appendChild(row);
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function handleWin() {
+        isGameOver = true;
+        showMessage("You Won!");
+        document.getElementById('input-area').classList.add('hidden');
+        document.getElementById('new-game-btn').classList.remove('hidden');
+    }
+
+    function showMessage(msg, isError = false) {
+        const el = document.getElementById('message');
+        el.innerText = msg;
+        el.style.color = isError ? 'red' : 'black';
+        if (!isGameOver && !isError) {
+            setTimeout(() => el.innerText = '', 2000);
+        }
+    }
+
+    document.getElementById('guess-input').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') submitGuess();
+    });
+</script>
+</body>
+</html>

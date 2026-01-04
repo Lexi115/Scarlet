@@ -1,7 +1,6 @@
 package io.lexi115.projectscarlet.words;
 
 import io.lexi115.projectscarlet.security.SecurityRules;
-import io.lexi115.projectscarlet.users.UserRole;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
@@ -36,7 +35,7 @@ public class WordSecurityRules implements SecurityRules {
                 .requestMatchers(HttpMethod.POST, BASE_PATH + "/guess").permitAll()
 
                 // Choose random word
-                .requestMatchers(HttpMethod.POST, BASE_PATH + "/randomWord").hasRole(UserRole.ADMIN)
+                .requestMatchers(HttpMethod.POST, BASE_PATH + "/randomWord").permitAll()
 
                 // Get solution
                 .requestMatchers(HttpMethod.GET, BASE_PATH + "/solution").permitAll();
