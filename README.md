@@ -24,7 +24,7 @@ system at set intervals and players have to guess it, receiving hints along the 
 ## Setup & Installation
 
 1) Install and run [Docker](https://www.docker.com).
-2) Open your terminal and ```cd``` into the project root directory.
+2) Clone this repository, then open your terminal and ```cd``` into the project root directory.
 3) Execute the ```docker compose up``` command.
 4) Enjoy sending HTTP requests to the available endpoints (or visit the frontend to play using a GUI)!
     - **Note:** default hostname and port are ```localhost:8080```.
