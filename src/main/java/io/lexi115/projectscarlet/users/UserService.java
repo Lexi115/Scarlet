@@ -1,14 +1,18 @@
 package io.lexi115.projectscarlet.users;
 
 import io.lexi115.projectscarlet.cache.CacheService;
+import io.lexi115.projectscarlet.core.ScarletConfig;
 import io.lexi115.projectscarlet.words.GuessResponse;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -40,6 +44,11 @@ public class UserService {
      * The password encoder.
      */
     private PasswordEncoder passwordEncoder;
+
+    /**
+     * The app configuration.
+     */
+    private ScarletConfig scarletConfig;
 
     /**
      * Gets a user by the username.
@@ -95,6 +104,19 @@ public class UserService {
         user.setWins(user.getWins() + 1);
         user.setLastGuessId(UUID.fromString(guessId));
         userRepository.save(user);
+    }
+
+    /**
+     * Returns a page of the users' leaderboard (sorted by most wins).
+     *
+     * @param page The page number (must be at least 1).
+     * @return The leaderboard page.
+     * @since 1.0
+     */
+    public List<LeaderboardEntry> getLeaderboard(final int page) {
+        var pageSize = scarletConfig.getLeaderboardPageSize();
+        var pageable = PageRequest.of(page - 1, pageSize, Sort.by("wins").descending());
+        return userRepository.findAll(pageable).map(userMapper::toLeaderboardEntry).toList();
     }
 
 }

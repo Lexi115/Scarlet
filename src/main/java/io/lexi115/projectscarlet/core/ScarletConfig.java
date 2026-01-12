@@ -25,5 +25,10 @@ public class ScarletConfig {
      */
     private Integer refreshTokenCookieDuration;
 
+    /**
+     * The size of a leaderboard page.
+     */
+    private Integer leaderboardPageSize;
+
 }
 

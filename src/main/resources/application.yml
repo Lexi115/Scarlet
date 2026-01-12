@@ -22,6 +22,7 @@ spring:
 scarlet:
   default-word: world
   refresh-token-cookie-duration: 604800 # 7d
+  leaderboard-page-size: 10
 
 # JSON Web Token authorization
 jwt:
