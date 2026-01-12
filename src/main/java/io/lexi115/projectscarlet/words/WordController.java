@@ -1,6 +1,7 @@
 package io.lexi115.projectscarlet.words;
 
 import io.lexi115.projectscarlet.auth.AuthService;
+import io.lexi115.projectscarlet.errors.ErrorResponse;
 import io.lexi115.projectscarlet.users.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -8,6 +9,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -89,6 +92,19 @@ public class WordController {
     @GetMapping("/solution")
     public SolutionResponse getSolution() {
         return wordService.getSolution();
+    }
+
+    /**
+     * Method that handles exceptions when an invalid word is provided.
+     *
+     * @param e The exception.
+     * @return The error response.
+     * @since 1.0
+     */
+    @ExceptionHandler(InvalidWordException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse onInvalidWord(@NonNull final InvalidWordException e) {
+        return new ErrorResponse(e.getMessage());
     }
 
 }

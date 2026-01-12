@@ -2,6 +2,7 @@ package io.lexi115.projectscarlet.words;
 
 import io.lexi115.projectscarlet.cache.CacheService;
 import io.lexi115.projectscarlet.core.ScarletConfig;
+import io.lexi115.projectscarlet.util.json.JsonHelper;
 import lombok.NonNull;
 import org.springframework.stereotype.Service;
 
@@ -22,9 +23,14 @@ public class WordService {
     private static final String CHOSEN_WORD_KEY = "chosenWord";
 
     /**
+     * The key for the word list stored in the cache.
+     */
+    private static final String WORD_LIST_KEY = "wordList";
+
+    /**
      * The cache service.
      */
-    private final CacheService cacheService;
+    private final CacheService<String> cacheService;
 
     /**
      * The word repository.
@@ -37,21 +43,30 @@ public class WordService {
     private final ScarletConfig scarletConfig;
 
     /**
+     * The JSON converter class.
+     */
+    private final JsonHelper jsonHelper;
+
+    /**
      * Constructor.
      *
      * @param cacheService   The cache service.
      * @param wordRepository The word repository.
      * @param scarletConfig  The app configuration.
+     * @param jsonHelper     The JSON converter class.
      * @since 1.0
      */
     public WordService(
-            final CacheService cacheService,
+            final CacheService<String> cacheService,
             final WordRepository wordRepository,
-            final ScarletConfig scarletConfig
+            final ScarletConfig scarletConfig,
+            final JsonHelper jsonHelper
     ) {
         this.cacheService = cacheService;
         this.wordRepository = wordRepository;
         this.scarletConfig = scarletConfig;
+        this.jsonHelper = jsonHelper;
+        loadWordsInCache();
         chooseRandomWord();
     }
 
@@ -64,9 +79,12 @@ public class WordService {
      * @since 1.0
      */
     public GuessResponse guessWord(@NonNull final GuessRequest request) {
-        var word = cacheService.get(CHOSEN_WORD_KEY, scarletConfig.getDefaultWord()).toUpperCase().trim();
-        var guess = request.getGuess().toUpperCase().trim();
+        var word = cacheService.get(CHOSEN_WORD_KEY, scarletConfig.getDefaultWord()).toLowerCase().trim();
+        var guess = request.getGuess().toLowerCase().trim();
         var correctGuess = guess.equals(word);
+        if (!getWordList().contains(guess)) {
+            throw new InvalidWordException("Invalid word!");
+        }
         var correctPositions = getCorrectPositions(word, guess);
         var misplacedCharacters = getMisplacedCharacters(word, guess);
         var absentCharacters = getAbsentCharacters(word, guess);
@@ -80,9 +98,9 @@ public class WordService {
      * @since 1.0
      */
     public String chooseRandomWord() {
-        var numOfWords = (int) wordRepository.count();
-        var randomId = new Random().nextInt(numOfWords) + 1;
-        var wordString = wordRepository.findById(randomId).orElseThrow().getValue();
+        var wordList = getWordList();
+        var randomId = new Random().nextInt(wordList.size()) + 1;
+        var wordString = wordList.get(randomId);
         cacheService.set(CHOSEN_WORD_KEY, wordString);
         cacheService.set("guessId", UUID.randomUUID().toString());
         return wordString;
@@ -203,4 +221,14 @@ public class WordService {
         return map;
     }
 
+    private void loadWordsInCache() {
+        var words = wordRepository.findAll();
+        var stringList = words.stream().map(word -> word.getValue().trim().toLowerCase()).toList();
+        cacheService.set(WORD_LIST_KEY, jsonHelper.stringify(stringList));
+    }
+
+    private List<String> getWordList() {
+        var jsonString = cacheService.get(WORD_LIST_KEY, "{}");
+        return jsonHelper.parseList(jsonString, String.class);
+    }
 }
