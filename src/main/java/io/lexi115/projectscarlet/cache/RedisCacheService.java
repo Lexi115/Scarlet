@@ -8,17 +8,18 @@ import org.springframework.stereotype.Service;
 /**
  * Implementation of {@link CacheService} that provides interaction with a Redis server for caching values.
  *
+ * @param <T> The type of the elements in the cache.
  * @author Lexi115
  * @since 1.0
  */
 @Service
 @AllArgsConstructor
-public class RedisCacheService implements CacheService {
+public class RedisCacheService<T> implements CacheService<T> {
 
     /**
      * The template used to interact with the Redis server instance.
      */
-    private RedisTemplate<String, String> template;
+    private RedisTemplate<String, T> template;
 
     /**
      * Returns a value given a key.
@@ -28,7 +29,7 @@ public class RedisCacheService implements CacheService {
      * @since 1.0
      */
     @Override
-    public String get(@NonNull final String key) {
+    public T get(@NonNull final String key) {
         return template.opsForValue().get(key);
     }
 
@@ -41,7 +42,7 @@ public class RedisCacheService implements CacheService {
      * @since 1.0
      */
     @Override
-    public String get(@NonNull final String key, final String defaultValue) {
+    public T get(@NonNull final String key, final T defaultValue) {
         var value = template.opsForValue().get(key);
         return value != null ? value : defaultValue;
     }
@@ -51,9 +52,10 @@ public class RedisCacheService implements CacheService {
      *
      * @param key   The key.
      * @param value The value.
+     * @since 1.0
      */
     @Override
-    public void set(@NonNull final String key, final String value) {
+    public void set(@NonNull final String key, final T value) {
         template.opsForValue().set(key, value);
     }
 

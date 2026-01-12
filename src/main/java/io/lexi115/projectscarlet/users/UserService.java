@@ -29,7 +29,7 @@ public class UserService {
     /**
      * The service used for caching values.
      */
-    private final CacheService cacheService;
+    private final CacheService<Object> cacheService;
 
     /**
      * The user repository.
@@ -86,7 +86,7 @@ public class UserService {
     @Transactional
     public void incrementUserWins(@NonNull final GuessResponse guessResponse, @NonNull final String username) {
         var user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-        var guessId = cacheService.get("guessId");
+        var guessId = (String) cacheService.get("guessId");
         var userLastGuessId = user.getLastGuessId();
         // Do not increment wins if user already solved current word or guessed wrong
         if ((userLastGuessId != null && userLastGuessId.toString().equals(guessId)) || !guessResponse.isCorrect()) {
