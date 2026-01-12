@@ -67,4 +67,18 @@ public class UserMapper {
         return summary;
     }
 
+    /**
+     * Converts a {@link User} into a {@link LeaderboardEntry} DTO.
+     *
+     * @param user The user.
+     * @return The leaderboard entry.
+     * @since 1.0
+     */
+    public @NonNull LeaderboardEntry toLeaderboardEntry(@NonNull final User user) {
+        var entry = new LeaderboardEntry();
+        entry.setUsername(user.getUsername());
+        entry.setWins(user.getWins());
+        return entry;
+    }
+
 }

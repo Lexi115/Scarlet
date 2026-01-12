@@ -6,11 +6,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Controller class for user-related operations.
@@ -62,6 +65,24 @@ public class UserController {
     })
     public UserSummary createUser(@Valid @RequestBody final CreateUserRequest request) {
         return userService.createUser(request);
+    }
+
+    /**
+     * Returns a page of the users' leaderboard (sorted by most wins).
+     *
+     * @param page The page number (must be at least 1).
+     * @return The leaderboard page.
+     * @since 1.0
+     */
+    @GetMapping("/leaderboard")
+    @Operation(summary = "Get user leaderboard", description = "Returns a page of the users' leaderboard (sorted by most wins).")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Leaderboard retrieved"),
+    })
+    public List<LeaderboardEntry> getLeaderboard(
+            @RequestParam(name = "page", defaultValue = "1") @Min(1) final int page
+    ) {
+        return userService.getLeaderboard(page);
     }
 
     /**

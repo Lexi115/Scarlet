@@ -34,6 +34,9 @@ public class UserSecurityRules implements SecurityRules {
                 // Get user by username
                 .requestMatchers(HttpMethod.GET, BASE_PATH + "/{username}").permitAll()
 
+                // Get user leaderboard
+                .requestMatchers(HttpMethod.GET, BASE_PATH + "/leaderboard").permitAll()
+
                 // Create user
                 .requestMatchers(HttpMethod.POST, BASE_PATH).permitAll();
     }
